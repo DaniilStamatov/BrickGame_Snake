@@ -1,25 +1,24 @@
 CC = gcc
-CFLAGS = -Wall -Wextra  -Werror -std=c11 -g
-GCOV_FLAGS = --coverage -fprofile-arcs -ftest-coverage
-CHECK_LIBS = -lcheck -lsubunit -lrt -lpthread -lm
-
+CFLAGS = -Wall -Wextra -Werror -g
+LDFLAGS = -lncurses -lm
 TARGET = ./tetris.a
 OBJ_DIR = ./build/obj
 GAME = ./game.c
 FRONTEND = ./gui/cli/renderer.c
 TETRIS_SOURCES = $(wildcard ./brick_game/tetris/*.c)
-OBJS = $(patsubst ./%.c, $(OBJ_DIR)/%.o, $(TETRIS_SOURCES))
-all: clean install
+OBJS = $(patsubst ./brick_game/tetris/%.c, $(OBJ_DIR)/brick_game/tetris/%.o, $(TETRIS_SOURCES))
 
-install:$(TARGET)
-	$(CC) $(CFLAGS) -o tetris $(GAME) $(FRONTEND) $(TARGET) -lncurses
-	make clean
+all: $(TARGET) tetris
+
+tetris: $(GAME) $(FRONTEND) $(TARGET)
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
 $(TARGET): $(OBJS)
-	ar rcs $@ $^
+	ar rc $@ $^
+	ranlib $@
 
-$(OBJ_DIR)/%.o: %.c
-	@mkdir -p $(OBJ_DIR) 
+$(OBJ_DIR)/brick_game/tetris/%.o: ./brick_game/tetris/%.c
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clang_format:
@@ -30,6 +29,6 @@ clang_format:
 	rm -f .clang-format
 
 clean:
-	rm -f $(OBJS) $(TARGET)
+	rm -rf $(OBJ_DIR) $(TARGET) tetris
 
-.PHONY: all clean
+.PHONY: all clean clang_format

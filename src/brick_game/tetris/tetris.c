@@ -405,7 +405,6 @@ void state_machine(Game *game) {
         init_game(game);
       } else if (game->action == Terminate) {
         game->game_info.pause = 3;
-        finish_game(game);
       }
     }
     game->new_input = 0;
