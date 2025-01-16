@@ -55,7 +55,7 @@ test: clean $(TETRIS_LIB)
 
 valgrind_tests: $(TEST_EXECUTABLES)
 	@echo "Running tests with Valgrind..."
-	valgrind --leak-check=full --track-origins=yes --show-leak-kinds=all --trace-children=yes -s ./unit_test 2>&1 || true;
+	valgrind --leak-check=full --track-origins=yes --show-leak-kinds=all --trace-children=yes -s $(OBJ_DIR)/unit_test 2>&1 || true;
 	@echo "end"
 
 dvi: clean

@@ -209,6 +209,7 @@ void check_lines_full(Game *game) {
   } else if (full_line_count == 4) {
     game->game_info.score += 700;
   }
-  game->game_info.level = game->game_info.score / 600 + 1;
+  if(game->game_info.level < 10)
+    game->game_info.level = game->game_info.score / 600 + 1;
   game->game_info.speed = GAME_SPEED * pow(0.8, game->game_info.level);
 }
