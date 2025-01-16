@@ -93,6 +93,7 @@ void finish_game(Game *game);
 void move_to_bottom(Game *game);
 void process_input(int c);
 int timer(Game *gs, int delay);
+void free_matrix(int **matrix, int rows);
 long long get_time();
 
 Tetromino *rotate_block(

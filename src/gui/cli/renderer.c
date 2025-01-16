@@ -43,13 +43,11 @@ void print_border() {
 
 void print_main_menu() {
   attron(COLOR_PAIR(3));
-
   mvaddstr(10, 2, "Press 'r' to start");
   attroff(COLOR_PAIR(3));
 }
 void print_pause_menu() {
   attron(COLOR_PAIR(3));
-
   mvaddstr(10, 2, "Paused! Press 'r' to start");
   attroff(COLOR_PAIR(3));
 }

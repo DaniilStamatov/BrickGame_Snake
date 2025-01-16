@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tetris Game Documentation</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; }
+        h1, h2, h3 { color: #333; }
+        pre { background: #f4f4f4; padding: 10px; border-radius: 5px; }
+        ul { margin: 10px 0; }
+    </style>
+</head>
+<body>
+
+<h1>Tetris Game Documentation</h1>
+
+<h2>Overview</h2>
+<p>This project implements a classic Tetris game using C and the NCurses library. The game allows players to control falling tetrominoes, clearing lines and scoring points. The project includes functionality for game initialization, user input handling, collision detection, and score management.</p>
+
+<h2>Table of Contents</h2>
+<ul>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#installation">Installation</a></li>
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="#game-controls">Game Controls</a></li>
+    <li><a href="#function-descriptions">Function Descriptions</a></li>
+    <li><a href="#testing">Testing</a></li>
+</ul>
+
+<h2 id="features">Features</h2>
+<ul>
+    <li>Classic Tetris gameplay</li>
+    <li>Various tetromino shapes</li>
+    <li>High score tracking</li>
+    <li>User controls for piece movement and rotation</li>
+    <li>Line clearing and score management</li>
+</ul>
+
+<h2 id="installation">Installation</h2>
+<h3>Prerequisites</h3>
+<ul>
+    <li>GCC (GNU Compiler Collection)</li>
+    <li>NCurses library</li>
+    <li>Check library (for unit testing)</li>
+    <li>Make</li>
+</ul>
+
+<h3>Steps</h3>
+<pre>
+1. Install the NCurses, GCC compiler, Make and Check libraries (if not already installed):
+
+2. Compile the game using makefile (src folder):
+   make install
+</pre>
+
+<h2 id="usage">Usage</h2>
+<p>Run the game using the following command:</p>
+<pre>./build/tetris</pre>
+
+<h2 id="game-controls">Game Controls</h2>
+<ul>
+    <li><strong>Arrow Left:</strong> Move piece left</li>
+    <li><strong>Arrow Right:</strong> Move piece right</li>
+    <li><strong>Arrow Down:</strong> Drop piece</li>
+    <li><strong>Space:</strong> Rotate piece</li>
+    <li><strong>P:</strong> Pause/Resume the game</li>
+    <li><strong>Q:</strong> Quit the game</li>
+</ul>
+
+<h2 id="function-descriptions">Function Descriptions</h2>
+<h3>void init_game()</h3>
+<p>Initializes the game state, including the game field and the first tetromino pieces.</p>
+
+<h3>void userInput(UserAction_t action, bool hold)</h3>
+<p>Handles user input to control the game actions based on the specified action.</p>
+
+<h3>GameInfo_t updateCurrentState()</h3>
+<p>Updates the current game state, including moving the tetromino down automatically based on the game speed.</p>
+
+
+<h3>void create_new_falling(Game* game)</h3>
+<p>Generates a new tetromino piece and checks for game over conditions.</p>
+
+<h3>int check_block_fits(const Game *game, Tetromino *block)</h3>
+<p>Checks if the current piece collides with the game field or boundaries.</p>
+
+<h3>void fill_next_func(GameInfo_t *game_info, Tetromino *next)</h3>
+<p>Fills the next tetromino piece to be displayed on the game interface, updating the game information structure accordingly.</p>
+
+<h3>Game *get_current_game_info()</h3>
+<p>Retrieves the current game information, including the state of the game field and the active tetromino.</p>
+
+<h3>GameInfo_t init_game_info()</h3>
+<p>Initializes the game information structure, setting up the initial state of the game, including score, level, and the next tetromino.</p>
+
+<h3>void check_lines_full(Game *game)</h3>
+<p>Checks for any completed lines in the game field and removes them, updating the score and potentially increasing the game speed.</p>
+
+<h3>void process_rotation(Game *game)</h3>
+<p>Handles the rotation of the current tetromino piece, ensuring that it fits within the game boundaries and does not collide with other pieces.</p>
+
+<h3>void move_right_or_left(Game *game, int direction)</h3>
+<p>Moves the current tetromino piece to the right or left based on the specified direction, checking for collisions with the game field boundaries.</p>
+
+<h3>void move_block_down(Game *game)</h3>
+<p>Moves the current tetromino piece down by one row in the game field, checking for collisions and handling any necessary game state updates.</p>
+
+<h3>void fill_current_from_next(Game *game)</h3>
+<p>Transfers the next tetromino piece into the current active piece, preparing for the next move in the game.</p>
+
+<h3>int **create_matrix(int rows, int columns)</h3>
+<p>Creates a 2D matrix of integers with the specified number of rows and columns, initializing all elements to zero.</p>
+
+<h3>void put_block(Game *game, Tetromino *block)</h3>
+<p>Places the specified tetromino block onto the game field, updating the game state to reflect the new position of the block.</p>
+
+<h3>void remove_block(Game *game, Tetromino *block)</h3>
+<p>Removes the specified tetromino block from the game field, allowing for the movement of other pieces.</p>
+
+<h3>void state_machine(Game *game)</h3>
+<p>Implements the game state machine, managing transitions between different game states such as playing, paused, and game over.</p>
+
+<h3>void move_figure(Game *game)</h3>
+<p>Handles the movement of the current tetromino piece based on user input and game logic, including automatic downward movement.</p>
+
+<h3>void finish_game(Game *game)</h3>
+<p>Finalizes the game state, performing any necessary cleanup and displaying the final score or game over message to the player.</p>
+
+<h3>void move_to_bottom(Game *game)</h3>
+<p>Moves the current tetromino piece down to the lowest possible position in the game field, either until it collides with another piece or reaches the bottom.</p>
+
+<h3>void process_input(int c)</h3>
+<p>Processes user input from the keyboard, translating key presses into game actions such as moving or rotating the tetromino.</p>
+
+<h3>int timer(Game *gs, int delay)</h3>
+<p>Implements a timer function that manages the game speed, triggering updates to the game state at specified intervals.</p>
+
+<h3>void free_matrix(int **matrix, int rows)</h3>
+<p>Frees the memory allocated for a 2D matrix of integers, ensuring proper memory management and preventing memory leaks.</p>
+
+<h3>long long get_time()</h3>
+<p>Retrieves the current time in milliseconds, which can be used for timing events or measuring game duration.</p>
+
+<h3>Tetromino *rotate_block(const Tetromino *block, TetrominoMap *blocks, int shift)</h3>
+<p>Rotates the specified tetromino block based on the shift parameter, which determines the direction of rotation (3 for right, 1 for left).</p>
+
+<h3>void init_new_map_block(TetrominoMap *blocks, int type)</h3>
+<p>Initializes a new block in the tetromino map based on the specified type, setting up its shape and rotation states.</p>
+
+<h3>TetrominoMap *init_all_block_types()</h3>
+<p>Initializes all types of tetromino blocks, preparing them for use in the game by setting their shapes and rotation states.</h3>
+
+<h3>void init_new_block(TetrominoMap *blocks, int type, Game *game)</h3>
+<p>Initializes a new tetromino block of the specified type, updating the game state to reflect the new block and its position in the game field.</p>
+
+<h3>void init_block_I(TetrominoMap *tetris)</h3>
+<p>Initializes the I-shaped tetromino block, defining its rotation states and shape for use in the game.</p>
+
+<h3>void init_block_L(TetrominoMap *tetris)</h3>
+<p>Initializes the L-shaped tetromino block, setting up its rotation states and shape for gameplay.</p>
+
+<h3>void init_block_J(TetrominoMap *tetris)</h3>
+<p>Initializes the J-shaped tetromino block, defining its rotation states and shape for use in the game.</p>
+
+<h3>void init_block_O(TetrominoMap *tetris)</h3>
+<p>Initializes the O-shaped tetromino block, setting its fixed shape since it does not rotate.</p>
+
+<h3>void init_block_S(TetrominoMap *tetris)</h3>
+<p>Initializes the S-shaped tetromino block, defining its rotation states and shape for gameplay.</p>
+
+<h3>void init_block_T(TetrominoMap *tetris)</h3>
+<p>Initializes the T-shaped tetromino block, setting up its rotation states and shape for use in the game.</p>
+
+<h3>void init_block_Z(TetrominoMap *tetris)</h3>
+<p>Initializes the Z-shaped tetromino block, defining its rotation states and shape for gameplay.</p>
+
+<h3>void fill_block_matrix(TetrominoMap *tetris, position states[4][4])</h3>
+<p>Fills the block matrix for a given tetromino type with its rotation states, allowing for proper rendering and collision detection during gameplay.</p>
+<h2 id="testing">Testing</h2>
+<p>Unit tests for the project can be found in the <code>tests/</code> file. To run the tests, compile and execute:</p>
+<pre>
+make test
+</pre>
+
+
+</body>
+</html>

@@ -1,7 +1,7 @@
 #include "tests.h"
 
 void run_tests(void) {
-  Suite *list_cases[] = {    NULL};
+  Suite *list_cases[] = {movement_suite(), machine_suite(), NULL};
   for (Suite **current_testcase = list_cases; *current_testcase != NULL;
        current_testcase++) {
     run_testcase(*current_testcase);
