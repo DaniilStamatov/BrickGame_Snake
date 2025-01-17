@@ -58,35 +58,21 @@ Implementation of the BrickGame v1.0 (Tetris) in the C programming language, adh
 
 1. **Clone the repository**
 
-    ```bash
-    git clone git@github.com:kmiakaeva/S21-tetris.git
-    ```
-
 2. **Navigate to the project directory**
 
-    ```bash
-    cd S21-tetris/src
-    ```
-
-3. **Build the project**
+3. **Build and run the project**
 
     ```bash
     make
     ```
 
-4. **Run the game**
-
-    ```bash
-    ./tetris
-    ```
-
-5. **Run tests**
+4. **Run tests**
 
     ```bash
     make test
     ```
 
-6. **Generate code coverage report**
+5. **Generate code coverage report**
 
     ```bash
     make gcov_report
