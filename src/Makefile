@@ -59,7 +59,8 @@ valgrind_tests: $(TEST_EXECUTABLES)
 	@echo "end"
 
 dvi: clean
-	xdg-open doc/index.html
+	doxygen doc/Doxyfile
+	xdg-open html/html/index.html
 	
 gcov_report: test
 	@echo "Generating coverage report..."
@@ -79,6 +80,7 @@ clean:
 	rm -rf $(OBJ_DIR) $(TETRIS_LIB) tetris coverage.info unit_test
 	rm -f ./*.gcno ./*.gcda 
 	rm -rf $(OBJ_DIR) coverage_report
+	rm -rf html
 
 clean_dist:
 	@cd ../ && rm -rf archive
