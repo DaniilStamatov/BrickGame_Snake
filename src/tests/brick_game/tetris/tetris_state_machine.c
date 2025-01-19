@@ -42,11 +42,8 @@ void move_figure(Game *game) {
     else if ((game->action == Action || game->action == Up))
       process_rotation(game);
   }
-  if (clock() - game->time > game->game_info.speed &&
-      game->game_info.pause != 1) {
+  if (timer(game, game->game_info.speed) && game->game_info.pause != 1)
     game->state = SHIFTING;
-    game->time = clock();
-  }
   game->new_input = 0;
 }
 
@@ -118,4 +115,5 @@ void finish_game(Game *game) {
   free(game->next);
   free(game->current);
   free(game->blocks);
+  game->is_playing = 0;
 }

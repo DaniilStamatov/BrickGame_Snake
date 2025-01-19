@@ -1,0 +1,894 @@
+\doxysection{brick\+\_\+game/tetris/tetris.h File Reference}
+\hypertarget{tetris_8h}{}\label{tetris_8h}\index{brick\_game/tetris/tetris.h@{brick\_game/tetris/tetris.h}}
+
+
+Implementation of functions from brickgame.\+h.  
+
+
+{\ttfamily \#include $<$math.\+h$>$}\newline
+{\ttfamily \#include $<$ncurses.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$time.\+h$>$}\newline
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structposition}{position}}
+\begin{DoxyCompactList}\small\item\em Represents a position on the game field. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structTetrominoMap}{Tetromino\+Map}}
+\begin{DoxyCompactList}\small\item\em Represents the mapping of a tetromino type to its rotation states. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structTetromino}{Tetromino}}
+\begin{DoxyCompactList}\small\item\em Represents a tetromino piece in the game. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structGameInfo__t}{Game\+Info\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Contains information about the current game state. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structGame}{Game}}
+\begin{DoxyCompactList}\small\item\em Represents the current state of the game. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{tetris_8h_a241aeeb764887ae5e3de58b98f04b16d}\label{tetris_8h_a241aeeb764887ae5e3de58b98f04b16d} 
+\#define {\bfseries WIDTH}~10
+\item 
+\Hypertarget{tetris_8h_aed89bd71aee8be823e8a20ec4e093c1e}\label{tetris_8h_aed89bd71aee8be823e8a20ec4e093c1e} 
+\#define {\bfseries HEIGHT}~20
+\item 
+\Hypertarget{tetris_8h_a5bb4257ca9fa4bfcf9391b7895b97761}\label{tetris_8h_a5bb4257ca9fa4bfcf9391b7895b97761} 
+\#define {\bfseries MAX\+\_\+\+LEVEL}~10
+\item 
+\Hypertarget{tetris_8h_a7645a891a19088e6fc698d38435dd4c9}\label{tetris_8h_a7645a891a19088e6fc698d38435dd4c9} 
+\#define {\bfseries GAME\+\_\+\+SPEED}~500
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{tetris_8h_a3746a84324bab30a3688f1390fced05e}\label{tetris_8h_a3746a84324bab30a3688f1390fced05e} 
+typedef enum \mbox{\hyperlink{tetris_8h_adc6e5733fc3c22f0a7b2914188c49c90}{state}} {\bfseries state}
+\item 
+\Hypertarget{tetris_8h_ae95ed9c09d4ff44297273224ccfbe1dd}\label{tetris_8h_ae95ed9c09d4ff44297273224ccfbe1dd} 
+typedef struct position {\bfseries position}
+\item 
+\Hypertarget{tetris_8h_a3fb30e20ae9cdab35ff2e42794711776}\label{tetris_8h_a3fb30e20ae9cdab35ff2e42794711776} 
+typedef enum \mbox{\hyperlink{tetris_8h_af9ad9c5ade85769bd61b6ba1052b83ed}{Tetris\+Type}} {\bfseries Tetris\+Type}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{tetris_8h_adc6e5733fc3c22f0a7b2914188c49c90}{state}} \{ \newline
+\mbox{\hyperlink{tetris_8h_adc6e5733fc3c22f0a7b2914188c49c90a13d000b4d7dc70d90239b7430d1eb6b2}{START}}
+, \mbox{\hyperlink{tetris_8h_adc6e5733fc3c22f0a7b2914188c49c90a881e5b8c00714da0b5327e02f62146fc}{SPAWN}}
+, \mbox{\hyperlink{tetris_8h_adc6e5733fc3c22f0a7b2914188c49c90a16ebdcb23eb5337fd5bc598fa8d6035d}{MOVING}}
+, \mbox{\hyperlink{tetris_8h_adc6e5733fc3c22f0a7b2914188c49c90a8c664aadc1a979743a1f27943bed5147}{SHIFTING}}
+, \newline
+\mbox{\hyperlink{tetris_8h_adc6e5733fc3c22f0a7b2914188c49c90a871723195985a4ae22d7e10d99bf8a00}{GAME\+\_\+\+OVER}}
+, \mbox{\hyperlink{tetris_8h_adc6e5733fc3c22f0a7b2914188c49c90a56b36d0d0bb01b339cf1041adc08e262}{PAUSE}}
+ \}
+\begin{DoxyCompactList}\small\item\em Represents the different states of the game. \end{DoxyCompactList}\item 
+enum \mbox{\hyperlink{tetris_8h_a7ba289d7b97db30e0b7041ca2cef75a9}{User\+Action\+\_\+t}} \{ \newline
+\mbox{\hyperlink{tetris_8h_a7ba289d7b97db30e0b7041ca2cef75a9abd5f9c956752ce4dc707b4624b3a36f7}{Start}}
+, \mbox{\hyperlink{tetris_8h_a7ba289d7b97db30e0b7041ca2cef75a9adaba8aa0fcd8a87c25fec7d916c789e7}{Pause}}
+, \mbox{\hyperlink{tetris_8h_a7ba289d7b97db30e0b7041ca2cef75a9aaf166713f3d14b30bee8f0ad5a09c4cb}{Terminate}}
+, \mbox{\hyperlink{tetris_8h_a7ba289d7b97db30e0b7041ca2cef75a9a9d4d8b0b72fc2659da772d761a3c5ecb}{Left}}
+, \newline
+\mbox{\hyperlink{tetris_8h_a7ba289d7b97db30e0b7041ca2cef75a9ad48f7af8c070184f3774c8e85854eb66}{Right}}
+, \mbox{\hyperlink{tetris_8h_a7ba289d7b97db30e0b7041ca2cef75a9a57a7edcbc04d6175683383cad5c3e0a2}{Up}}
+, \mbox{\hyperlink{tetris_8h_a7ba289d7b97db30e0b7041ca2cef75a9abcf8c79e9a5f5f9d606fb35645a0fb27}{Down}}
+, \mbox{\hyperlink{tetris_8h_a7ba289d7b97db30e0b7041ca2cef75a9a3887649be5130f60dd3e7a6eb8e9f142}{Action}}
+ \}
+\begin{DoxyCompactList}\small\item\em Represents user actions in the game. \end{DoxyCompactList}\item 
+enum \mbox{\hyperlink{tetris_8h_af9ad9c5ade85769bd61b6ba1052b83ed}{Tetris\+Type}} \{ \newline
+\mbox{\hyperlink{tetris_8h_af9ad9c5ade85769bd61b6ba1052b83edad091b8e376f7cf432dc367e1eda65e85}{I}}
+, \mbox{\hyperlink{tetris_8h_af9ad9c5ade85769bd61b6ba1052b83edaef31cc6fe9479955961311ee18ac205f}{L}}
+, \mbox{\hyperlink{tetris_8h_af9ad9c5ade85769bd61b6ba1052b83eda03605500b0c55f3d95874e8edfcf4e30}{J}}
+, \mbox{\hyperlink{tetris_8h_af9ad9c5ade85769bd61b6ba1052b83edaf4b8b7698dfedf5562a7db2bdb07010a}{O}}
+, \newline
+\mbox{\hyperlink{tetris_8h_af9ad9c5ade85769bd61b6ba1052b83edaf1ce01387d2348f8b858721a7db81670}{S}}
+, \mbox{\hyperlink{tetris_8h_af9ad9c5ade85769bd61b6ba1052b83eda21f40778b7db9343a6ca75ec2c41ccce}{T}}
+, \mbox{\hyperlink{tetris_8h_af9ad9c5ade85769bd61b6ba1052b83edaa70478ce277ffc322f8e1e3418e07355}{Z}}
+ \}
+\begin{DoxyCompactList}\small\item\em Represents the different types of tetrominoes. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{tetris_8h_aed0eb46c90ea1c84690520cbb3378af2}\label{tetris_8h_aed0eb46c90ea1c84690520cbb3378af2} 
+void {\bfseries init\+\_\+game} (\mbox{\hyperlink{structGame}{Game}} \texorpdfstring{$\ast$}{*}game)
+\begin{DoxyCompactList}\small\item\em Initializes the game state, including the game field and the first tetromino pieces. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{tetris_8h_ab961f91e569a34b6984536633126257a}{user\+Input}} (\mbox{\hyperlink{tetris_8h_a7ba289d7b97db30e0b7041ca2cef75a9}{User\+Action\+\_\+t}} action, bool hold)
+\begin{DoxyCompactList}\small\item\em Handles user input to control the game actions based on the specified action. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structGameInfo__t}{Game\+Info\+\_\+t}} \mbox{\hyperlink{tetris_8h_afd5762991a9248a0b4192983fd786a8f}{update\+Current\+State}} ()
+\begin{DoxyCompactList}\small\item\em Updates the current game state, including moving the tetromino down automatically based on the game speed. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{tetris_8h_a311859203a6603ad61c6ef242bfa1843}{process\+\_\+input}} (int c)
+\begin{DoxyCompactList}\small\item\em Processes user input from the keyboard, translating key presses into game actions. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{tetris_8h_a7646405b13c538fe6e0436aeb8200fa2}{create\+\_\+new\+\_\+falling}} (\mbox{\hyperlink{structGame}{Game}} \texorpdfstring{$\ast$}{*}game)
+\begin{DoxyCompactList}\small\item\em Generates a new tetromino piece and checks for game over conditions. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{tetris_8h_a4880637c0a59d5fde810131c8e18bb81}{fill\+\_\+next\+\_\+func}} (\mbox{\hyperlink{structGameInfo__t}{Game\+Info\+\_\+t}} \texorpdfstring{$\ast$}{*}game\+\_\+info, \mbox{\hyperlink{structTetromino}{Tetromino}} \texorpdfstring{$\ast$}{*}next)
+\begin{DoxyCompactList}\small\item\em Fills the next tetromino piece to be displayed on the game interface. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structGame}{Game}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{tetris_8h_a3f9c3cc8730e1c2fe38ad0fcc98e46b8}{get\+\_\+current\+\_\+game\+\_\+info}} ()
+\begin{DoxyCompactList}\small\item\em Retrieves the current game information, including the state of the game field and the active tetromino. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structGameInfo__t}{Game\+Info\+\_\+t}} \mbox{\hyperlink{tetris_8h_aecb7cc53b2b1f3b04631a185ee2f0cd8}{init\+\_\+game\+\_\+info}} ()
+\begin{DoxyCompactList}\small\item\em Initializes the game information structure, setting up the initial state of the game. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{tetris_8h_a537950beca29949e8922ba0c319f9326}{check\+\_\+lines\+\_\+full}} (\mbox{\hyperlink{structGame}{Game}} \texorpdfstring{$\ast$}{*}game)
+\begin{DoxyCompactList}\small\item\em Checks for any completed lines in the game field and removes them. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{tetris_8h_af7fa1906f30e236f2146834a3b1e3237}{process\+\_\+rotation}} (\mbox{\hyperlink{structGame}{Game}} \texorpdfstring{$\ast$}{*}game)
+\begin{DoxyCompactList}\small\item\em Handles the rotation of the current tetromino piece. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{tetris_8h_a1650ac61287b4e45cfc2e3a4f6009eae}{move\+\_\+right\+\_\+or\+\_\+left}} (\mbox{\hyperlink{structGame}{Game}} \texorpdfstring{$\ast$}{*}game, int direction)
+\begin{DoxyCompactList}\small\item\em Moves the current tetromino piece to the right or left based on the specified direction. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{tetris_8h_a8b5c99f3cead346a21c0024c5183d8c2}{move\+\_\+block\+\_\+down}} (\mbox{\hyperlink{structGame}{Game}} \texorpdfstring{$\ast$}{*}game)
+\begin{DoxyCompactList}\small\item\em Moves the current tetromino piece down by one row in the game field. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{tetris_8h_a097efc9e5d01e701329f5a9967fa3921}{fill\+\_\+current\+\_\+from\+\_\+next}} (\mbox{\hyperlink{structGame}{Game}} \texorpdfstring{$\ast$}{*}game)
+\begin{DoxyCompactList}\small\item\em Transfers the next tetromino piece into the current active piece. \end{DoxyCompactList}\item 
+int \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{tetris_8h_aa3aeaded95f2db20a0465b1623c55cf3}{create\+\_\+matrix}} (int rows, int columns)
+\begin{DoxyCompactList}\small\item\em Creates a 2D matrix of integers with the specified number of rows and columns. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{tetris_8h_a5f7a621f88fdb38ee62f4632b5236784}{put\+\_\+block}} (\mbox{\hyperlink{structGame}{Game}} \texorpdfstring{$\ast$}{*}game, \mbox{\hyperlink{structTetromino}{Tetromino}} \texorpdfstring{$\ast$}{*}block)
+\begin{DoxyCompactList}\small\item\em Places the specified tetromino block onto the game field. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{tetris_8h_a7334ed9f934fa6f82809b7781f958939}{remove\+\_\+block}} (\mbox{\hyperlink{structGame}{Game}} \texorpdfstring{$\ast$}{*}game, \mbox{\hyperlink{structTetromino}{Tetromino}} \texorpdfstring{$\ast$}{*}block)
+\begin{DoxyCompactList}\small\item\em Removes the specified tetromino block from the game field. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{tetris_8h_aac13c96258ba755a57ddf07e83825c57}{state\+\_\+machine}} (\mbox{\hyperlink{structGame}{Game}} \texorpdfstring{$\ast$}{*}game)
+\begin{DoxyCompactList}\small\item\em Implements the game state machine, managing transitions between different game states. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{tetris_8h_ad2e09229c416ae377fd32662f88fc9fc}{move\+\_\+figure}} (\mbox{\hyperlink{structGame}{Game}} \texorpdfstring{$\ast$}{*}game)
+\begin{DoxyCompactList}\small\item\em Handles the movement of the current tetromino piece based on user input and game logic. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{tetris_8h_a1746639b2d6c8420e43ddf151adbbdeb}{finish\+\_\+game}} (\mbox{\hyperlink{structGame}{Game}} \texorpdfstring{$\ast$}{*}game)
+\begin{DoxyCompactList}\small\item\em Finalizes the game state, performing any necessary cleanup and displaying the final score. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{tetris_8h_ad5d778edc86e7471eb54d90e07c84014}{move\+\_\+to\+\_\+bottom}} (\mbox{\hyperlink{structGame}{Game}} \texorpdfstring{$\ast$}{*}game)
+\begin{DoxyCompactList}\small\item\em Moves the current tetromino piece down to the lowest possible position in the game field. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{tetris_8h_a11f2df64fb2f4aca618592fcd95f461b}{timer}} (\mbox{\hyperlink{structGame}{Game}} \texorpdfstring{$\ast$}{*}gs, int delay)
+\begin{DoxyCompactList}\small\item\em Implements a timer function that manages the game speed. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{tetris_8h_a1a8ac7315a84974bc8ff9236ede9cd1e}{free\+\_\+matrix}} (int \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}matrix, int rows)
+\begin{DoxyCompactList}\small\item\em Frees the memory allocated for a 2D matrix of integers. \end{DoxyCompactList}\item 
+long long \mbox{\hyperlink{tetris_8h_a4afc15012ef7afe4c0770d43a28cbbe8}{get\+\_\+time}} ()
+\begin{DoxyCompactList}\small\item\em Retrieves the current time in milliseconds. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structTetromino}{Tetromino}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{tetris_8h_ac83b0a6289e8fb04388e82b0d0271efb}{rotate\+\_\+block}} (const \mbox{\hyperlink{structTetromino}{Tetromino}} \texorpdfstring{$\ast$}{*}block, \mbox{\hyperlink{structTetrominoMap}{Tetromino\+Map}} \texorpdfstring{$\ast$}{*}blocks, int shift)
+\begin{DoxyCompactList}\small\item\em Rotates the specified tetromino block based on the shift parameter. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{tetris_8h_a202343333174f956c256bc7ae81d642c}{check\+\_\+block\+\_\+fits}} (const \mbox{\hyperlink{structGame}{Game}} \texorpdfstring{$\ast$}{*}game, \mbox{\hyperlink{structTetromino}{Tetromino}} \texorpdfstring{$\ast$}{*}block)
+\begin{DoxyCompactList}\small\item\em Checks if the current piece collides with the game field or boundaries. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{tetris_8h_aaa782037837daf0f46a1f113b4b3640f}{init\+\_\+new\+\_\+map\+\_\+block}} (\mbox{\hyperlink{structTetrominoMap}{Tetromino\+Map}} \texorpdfstring{$\ast$}{*}blocks, int type)
+\begin{DoxyCompactList}\small\item\em Initializes a new block in the tetromino map based on the specified type. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structTetrominoMap}{Tetromino\+Map}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{tetris_8h_a061120aabb46c6bfa3059861f383e5ec}{init\+\_\+all\+\_\+block\+\_\+types}} ()
+\begin{DoxyCompactList}\small\item\em Initializes all types of tetromino blocks. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{tetris_8h_a09c5b3a159d7cf3eeb204178cabe5417}{init\+\_\+new\+\_\+block}} (\mbox{\hyperlink{structTetrominoMap}{Tetromino\+Map}} \texorpdfstring{$\ast$}{*}blocks, int type, \mbox{\hyperlink{structGame}{Game}} \texorpdfstring{$\ast$}{*}game)
+\begin{DoxyCompactList}\small\item\em Initializes a new tetromino block of the specified type. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{tetris_8h_acb67defeb4732037f7839e155e47fa06}{init\+\_\+block\+\_\+I}} (\mbox{\hyperlink{structTetrominoMap}{Tetromino\+Map}} \texorpdfstring{$\ast$}{*}tetris)
+\begin{DoxyCompactList}\small\item\em Initializes the I-\/shaped tetromino block. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{tetris_8h_ae4bc5ec27c23f9c3ffa1824dc50fe014}{init\+\_\+block\+\_\+L}} (\mbox{\hyperlink{structTetrominoMap}{Tetromino\+Map}} \texorpdfstring{$\ast$}{*}tetris)
+\begin{DoxyCompactList}\small\item\em Initializes the L-\/shaped tetromino block. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{tetris_8h_ae4ac3e5d32e888138bef613bf5a5c5c0}{init\+\_\+block\+\_\+J}} (\mbox{\hyperlink{structTetrominoMap}{Tetromino\+Map}} \texorpdfstring{$\ast$}{*}tetris)
+\begin{DoxyCompactList}\small\item\em Initializes the J-\/shaped tetromino block. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{tetris_8h_a085d01a65aa9fca1d585402aa1b66a57}{init\+\_\+block\+\_\+O}} (\mbox{\hyperlink{structTetrominoMap}{Tetromino\+Map}} \texorpdfstring{$\ast$}{*}tetris)
+\begin{DoxyCompactList}\small\item\em Initializes the O-\/shaped tetromino block. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{tetris_8h_a8c072bd13b46d3d79cccd96e538fac68}{init\+\_\+block\+\_\+S}} (\mbox{\hyperlink{structTetrominoMap}{Tetromino\+Map}} \texorpdfstring{$\ast$}{*}tetris)
+\begin{DoxyCompactList}\small\item\em Initializes the S-\/shaped tetromino block. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{tetris_8h_acf5719d7b7075ec81157e4a5c36ec7d6}{init\+\_\+block\+\_\+T}} (\mbox{\hyperlink{structTetrominoMap}{Tetromino\+Map}} \texorpdfstring{$\ast$}{*}tetris)
+\begin{DoxyCompactList}\small\item\em Initializes the T-\/shaped tetromino block. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{tetris_8h_aef9b649c4799dbc1d725155fb3fa289e}{init\+\_\+block\+\_\+Z}} (\mbox{\hyperlink{structTetrominoMap}{Tetromino\+Map}} \texorpdfstring{$\ast$}{*}tetris)
+\begin{DoxyCompactList}\small\item\em Initializes the Z-\/shaped tetromino block. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{tetris_8h_a576ddcad9b983fb15a9b081252f4615d}{fill\+\_\+block\+\_\+matrix}} (\mbox{\hyperlink{structTetrominoMap}{Tetromino\+Map}} \texorpdfstring{$\ast$}{*}tetris, \mbox{\hyperlink{structposition}{position}} states\mbox{[}4\mbox{]}\mbox{[}4\mbox{]})
+\begin{DoxyCompactList}\small\item\em Fills the block matrix for a given tetromino type with its rotation states. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Implementation of functions from brickgame.\+h. 
+
+This file contains realization of user actions, initialization of 
+
+\doxysubsection{Enumeration Type Documentation}
+\Hypertarget{tetris_8h_adc6e5733fc3c22f0a7b2914188c49c90}\index{tetris.h@{tetris.h}!state@{state}}
+\index{state@{state}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{state}{state}}
+{\footnotesize\ttfamily \label{tetris_8h_adc6e5733fc3c22f0a7b2914188c49c90} 
+enum \mbox{\hyperlink{tetris_8h_adc6e5733fc3c22f0a7b2914188c49c90}{state}}}
+
+
+
+Represents the different states of the game. 
+
+\hypertarget{tetris_8h_features}{}\doxysubsection{\texorpdfstring{Features}{Features}}\label{tetris_8h_features}
+
+\begin{DoxyItemize}
+\item Classic Tetris gameplay
+\item Various tetromino shapes
+\item High score tracking
+\item User controls for piece movement and rotation
+\item Line clearing and score management 
+\end{DoxyItemize}\hypertarget{tetris_8h_installation}{}\doxysubsection{\texorpdfstring{Installation}{Installation}}\label{tetris_8h_installation}
+\hypertarget{tetris_8h_autotoc_md2}{}\doxysubsubsubsection{\texorpdfstring{Prerequisites}{Prerequisites}}\label{tetris_8h_autotoc_md2}
+
+\begin{DoxyItemize}
+\item GCC (GNU Compiler Collection)
+\item NCurses library
+\item Check library (for unit testing)
+\item Make
+\end{DoxyItemize}\hypertarget{tetris_8h_autotoc_md3}{}\doxysubsubsubsection{\texorpdfstring{Steps}{Steps}}\label{tetris_8h_autotoc_md3}
+
+\begin{DoxyEnumerate}
+\item Install the NCurses, GCC compiler, Make and Check libraries (if not already installed).
+\item Compile the game using makefile (src folder)\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{make\ install}
+
+\end{DoxyCode}
+ 
+\end{DoxyEnumerate}\hypertarget{tetris_8h_usage}{}\doxysubsection{\texorpdfstring{Usage}{Usage}}\label{tetris_8h_usage}
+Run the game using the following command\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{./build/tetris}
+
+\end{DoxyCode}
+ \hypertarget{tetris_8h_game-controls}{}\doxysubsection{\texorpdfstring{Game Controls}{Game Controls}}\label{tetris_8h_game-controls}
+
+\begin{DoxyItemize}
+\item {\bfseries{Arrow Left\+:}} Move piece left
+\item {\bfseries{Arrow Right\+:}} Move piece right
+\item {\bfseries{Arrow Down\+:}} Drop piece
+\item {\bfseries{Space\+:}} Rotate piece
+\item {\bfseries{P\+:}} Pause/\+Resume the game
+\item {\bfseries{Q\+:}} Quit the game 
+\end{DoxyItemize}\hypertarget{tetris_8h_function-descriptions}{}\doxysubsection{\texorpdfstring{Function Descriptions}{Function Descriptions}}\label{tetris_8h_function-descriptions}
+\begin{DoxyEnumFields}[2]{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{START@{START}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!START@{START}}}\Hypertarget{tetris_8h_adc6e5733fc3c22f0a7b2914188c49c90a13d000b4d7dc70d90239b7430d1eb6b2}\label{tetris_8h_adc6e5733fc3c22f0a7b2914188c49c90} 
+START&The initial state of the game. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{SPAWN@{SPAWN}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!SPAWN@{SPAWN}}}\Hypertarget{tetris_8h_adc6e5733fc3c22f0a7b2914188c49c90a881e5b8c00714da0b5327e02f62146fc}\label{tetris_8h_adc6e5733fc3c22f0a7b2914188c49c90} 
+SPAWN&The state when a new tetromino is spawned. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{MOVING@{MOVING}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!MOVING@{MOVING}}}\Hypertarget{tetris_8h_adc6e5733fc3c22f0a7b2914188c49c90a16ebdcb23eb5337fd5bc598fa8d6035d}\label{tetris_8h_adc6e5733fc3c22f0a7b2914188c49c90} 
+MOVING&The state when the tetromino is moving. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{SHIFTING@{SHIFTING}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!SHIFTING@{SHIFTING}}}\Hypertarget{tetris_8h_adc6e5733fc3c22f0a7b2914188c49c90a8c664aadc1a979743a1f27943bed5147}\label{tetris_8h_adc6e5733fc3c22f0a7b2914188c49c90} 
+SHIFTING&The state when the tetromino is shifting. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{GAME\_OVER@{GAME\_OVER}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!GAME\_OVER@{GAME\_OVER}}}\Hypertarget{tetris_8h_adc6e5733fc3c22f0a7b2914188c49c90a871723195985a4ae22d7e10d99bf8a00}\label{tetris_8h_adc6e5733fc3c22f0a7b2914188c49c90} 
+GAME\+\_\+\+OVER&The state when the game is over. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PAUSE@{PAUSE}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!PAUSE@{PAUSE}}}\Hypertarget{tetris_8h_adc6e5733fc3c22f0a7b2914188c49c90a56b36d0d0bb01b339cf1041adc08e262}\label{tetris_8h_adc6e5733fc3c22f0a7b2914188c49c90} 
+PAUSE&The state when the game is paused. \\
+\hline
+
+\end{DoxyEnumFields}
+\Hypertarget{tetris_8h_af9ad9c5ade85769bd61b6ba1052b83ed}\index{tetris.h@{tetris.h}!TetrisType@{TetrisType}}
+\index{TetrisType@{TetrisType}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{TetrisType}{TetrisType}}
+{\footnotesize\ttfamily \label{tetris_8h_af9ad9c5ade85769bd61b6ba1052b83ed} 
+enum \mbox{\hyperlink{tetris_8h_af9ad9c5ade85769bd61b6ba1052b83ed}{Tetris\+Type}}}
+
+
+
+Represents the different types of tetrominoes. 
+
+\begin{DoxyEnumFields}[2]{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{I@{I}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!I@{I}}}\Hypertarget{tetris_8h_af9ad9c5ade85769bd61b6ba1052b83edad091b8e376f7cf432dc367e1eda65e85}\label{tetris_8h_af9ad9c5ade85769bd61b6ba1052b83ed} 
+I&I-\/shaped tetromino. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{L@{L}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!L@{L}}}\Hypertarget{tetris_8h_af9ad9c5ade85769bd61b6ba1052b83edaef31cc6fe9479955961311ee18ac205f}\label{tetris_8h_af9ad9c5ade85769bd61b6ba1052b83ed} 
+L&L-\/shaped tetromino. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{J@{J}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!J@{J}}}\Hypertarget{tetris_8h_af9ad9c5ade85769bd61b6ba1052b83eda03605500b0c55f3d95874e8edfcf4e30}\label{tetris_8h_af9ad9c5ade85769bd61b6ba1052b83ed} 
+J&J-\/shaped tetromino. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{O@{O}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!O@{O}}}\Hypertarget{tetris_8h_af9ad9c5ade85769bd61b6ba1052b83edaf4b8b7698dfedf5562a7db2bdb07010a}\label{tetris_8h_af9ad9c5ade85769bd61b6ba1052b83ed} 
+O&O-\/shaped tetromino. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{S@{S}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!S@{S}}}\Hypertarget{tetris_8h_af9ad9c5ade85769bd61b6ba1052b83edaf1ce01387d2348f8b858721a7db81670}\label{tetris_8h_af9ad9c5ade85769bd61b6ba1052b83ed} 
+S&S-\/shaped tetromino. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{T@{T}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!T@{T}}}\Hypertarget{tetris_8h_af9ad9c5ade85769bd61b6ba1052b83eda21f40778b7db9343a6ca75ec2c41ccce}\label{tetris_8h_af9ad9c5ade85769bd61b6ba1052b83ed} 
+T&T-\/shaped tetromino. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Z@{Z}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Z@{Z}}}\Hypertarget{tetris_8h_af9ad9c5ade85769bd61b6ba1052b83edaa70478ce277ffc322f8e1e3418e07355}\label{tetris_8h_af9ad9c5ade85769bd61b6ba1052b83ed} 
+Z&Z-\/shaped tetromino. \\
+\hline
+
+\end{DoxyEnumFields}
+\Hypertarget{tetris_8h_a7ba289d7b97db30e0b7041ca2cef75a9}\index{tetris.h@{tetris.h}!UserAction\_t@{UserAction\_t}}
+\index{UserAction\_t@{UserAction\_t}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{UserAction\_t}{UserAction\_t}}
+{\footnotesize\ttfamily \label{tetris_8h_a7ba289d7b97db30e0b7041ca2cef75a9} 
+enum \mbox{\hyperlink{tetris_8h_a7ba289d7b97db30e0b7041ca2cef75a9}{User\+Action\+\_\+t}}}
+
+
+
+Represents user actions in the game. 
+
+\begin{DoxyEnumFields}[2]{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Start@{Start}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Start@{Start}}}\Hypertarget{tetris_8h_a7ba289d7b97db30e0b7041ca2cef75a9abd5f9c956752ce4dc707b4624b3a36f7}\label{tetris_8h_a7ba289d7b97db30e0b7041ca2cef75a9} 
+Start&Action to start the game. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Pause@{Pause}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Pause@{Pause}}}\Hypertarget{tetris_8h_a7ba289d7b97db30e0b7041ca2cef75a9adaba8aa0fcd8a87c25fec7d916c789e7}\label{tetris_8h_a7ba289d7b97db30e0b7041ca2cef75a9} 
+Pause&Action to pause the game. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Terminate@{Terminate}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Terminate@{Terminate}}}\Hypertarget{tetris_8h_a7ba289d7b97db30e0b7041ca2cef75a9aaf166713f3d14b30bee8f0ad5a09c4cb}\label{tetris_8h_a7ba289d7b97db30e0b7041ca2cef75a9} 
+Terminate&Action to terminate the game. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Left@{Left}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Left@{Left}}}\Hypertarget{tetris_8h_a7ba289d7b97db30e0b7041ca2cef75a9a9d4d8b0b72fc2659da772d761a3c5ecb}\label{tetris_8h_a7ba289d7b97db30e0b7041ca2cef75a9} 
+Left&Action to move the tetromino left. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Right@{Right}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Right@{Right}}}\Hypertarget{tetris_8h_a7ba289d7b97db30e0b7041ca2cef75a9ad48f7af8c070184f3774c8e85854eb66}\label{tetris_8h_a7ba289d7b97db30e0b7041ca2cef75a9} 
+Right&Action to move the tetromino right. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Up@{Up}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Up@{Up}}}\Hypertarget{tetris_8h_a7ba289d7b97db30e0b7041ca2cef75a9a57a7edcbc04d6175683383cad5c3e0a2}\label{tetris_8h_a7ba289d7b97db30e0b7041ca2cef75a9} 
+Up&Action to move the tetromino up. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Down@{Down}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Down@{Down}}}\Hypertarget{tetris_8h_a7ba289d7b97db30e0b7041ca2cef75a9abcf8c79e9a5f5f9d606fb35645a0fb27}\label{tetris_8h_a7ba289d7b97db30e0b7041ca2cef75a9} 
+Down&Action to move the tetromino down. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Action@{Action}!tetris.h@{tetris.h}}\index{tetris.h@{tetris.h}!Action@{Action}}}\Hypertarget{tetris_8h_a7ba289d7b97db30e0b7041ca2cef75a9a3887649be5130f60dd3e7a6eb8e9f142}\label{tetris_8h_a7ba289d7b97db30e0b7041ca2cef75a9} 
+Action&Action to perform a specific game action (e.\+g., rotate). \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\doxysubsection{Function Documentation}
+\Hypertarget{tetris_8h_a202343333174f956c256bc7ae81d642c}\index{tetris.h@{tetris.h}!check\_block\_fits@{check\_block\_fits}}
+\index{check\_block\_fits@{check\_block\_fits}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{check\_block\_fits()}{check\_block\_fits()}}
+{\footnotesize\ttfamily \label{tetris_8h_a202343333174f956c256bc7ae81d642c} 
+int check\+\_\+block\+\_\+fits (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structGame}{Game}} \texorpdfstring{$\ast$}{*}}]{game}{, }\item[{\mbox{\hyperlink{structTetromino}{Tetromino}} \texorpdfstring{$\ast$}{*}}]{block}{}\end{DoxyParamCaption})}
+
+
+
+Checks if the current piece collides with the game field or boundaries. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em game} & Pointer to the current game instance. \\
+\hline
+{\em block} & Pointer to the tetromino block to check. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+1 if the block fits, 0 otherwise. 
+\end{DoxyReturn}
+\Hypertarget{tetris_8h_a537950beca29949e8922ba0c319f9326}\index{tetris.h@{tetris.h}!check\_lines\_full@{check\_lines\_full}}
+\index{check\_lines\_full@{check\_lines\_full}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{check\_lines\_full()}{check\_lines\_full()}}
+{\footnotesize\ttfamily \label{tetris_8h_a537950beca29949e8922ba0c319f9326} 
+void check\+\_\+lines\+\_\+full (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structGame}{Game}} \texorpdfstring{$\ast$}{*}}]{game}{}\end{DoxyParamCaption})}
+
+
+
+Checks for any completed lines in the game field and removes them. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em game} & Pointer to the current game instance. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{tetris_8h_aa3aeaded95f2db20a0465b1623c55cf3}\index{tetris.h@{tetris.h}!create\_matrix@{create\_matrix}}
+\index{create\_matrix@{create\_matrix}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{create\_matrix()}{create\_matrix()}}
+{\footnotesize\ttfamily \label{tetris_8h_aa3aeaded95f2db20a0465b1623c55cf3} 
+int \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*} create\+\_\+matrix (\begin{DoxyParamCaption}\item[{int}]{rows}{, }\item[{int}]{columns}{}\end{DoxyParamCaption})}
+
+
+
+Creates a 2D matrix of integers with the specified number of rows and columns. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em rows} & Number of rows in the matrix. \\
+\hline
+{\em columns} & Number of columns in the matrix. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to the created matrix. 
+\end{DoxyReturn}
+\Hypertarget{tetris_8h_a7646405b13c538fe6e0436aeb8200fa2}\index{tetris.h@{tetris.h}!create\_new\_falling@{create\_new\_falling}}
+\index{create\_new\_falling@{create\_new\_falling}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{create\_new\_falling()}{create\_new\_falling()}}
+{\footnotesize\ttfamily \label{tetris_8h_a7646405b13c538fe6e0436aeb8200fa2} 
+void create\+\_\+new\+\_\+falling (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structGame}{Game}} \texorpdfstring{$\ast$}{*}}]{game}{}\end{DoxyParamCaption})}
+
+
+
+Generates a new tetromino piece and checks for game over conditions. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em game} & Pointer to the current game instance. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{tetris_8h_a576ddcad9b983fb15a9b081252f4615d}\index{tetris.h@{tetris.h}!fill\_block\_matrix@{fill\_block\_matrix}}
+\index{fill\_block\_matrix@{fill\_block\_matrix}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{fill\_block\_matrix()}{fill\_block\_matrix()}}
+{\footnotesize\ttfamily \label{tetris_8h_a576ddcad9b983fb15a9b081252f4615d} 
+void fill\+\_\+block\+\_\+matrix (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structTetrominoMap}{Tetromino\+Map}} \texorpdfstring{$\ast$}{*}}]{tetris}{, }\item[{\mbox{\hyperlink{structposition}{position}}}]{states}{\mbox{[}4\mbox{]}\mbox{[}4\mbox{]}}\end{DoxyParamCaption})}
+
+
+
+Fills the block matrix for a given tetromino type with its rotation states. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tetris} & Pointer to the tetromino map. \\
+\hline
+{\em states} & The rotation states of the tetromino. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{tetris_8h_a097efc9e5d01e701329f5a9967fa3921}\index{tetris.h@{tetris.h}!fill\_current\_from\_next@{fill\_current\_from\_next}}
+\index{fill\_current\_from\_next@{fill\_current\_from\_next}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{fill\_current\_from\_next()}{fill\_current\_from\_next()}}
+{\footnotesize\ttfamily \label{tetris_8h_a097efc9e5d01e701329f5a9967fa3921} 
+void fill\+\_\+current\+\_\+from\+\_\+next (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structGame}{Game}} \texorpdfstring{$\ast$}{*}}]{game}{}\end{DoxyParamCaption})}
+
+
+
+Transfers the next tetromino piece into the current active piece. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em game} & Pointer to the current game instance. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{tetris_8h_a4880637c0a59d5fde810131c8e18bb81}\index{tetris.h@{tetris.h}!fill\_next\_func@{fill\_next\_func}}
+\index{fill\_next\_func@{fill\_next\_func}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{fill\_next\_func()}{fill\_next\_func()}}
+{\footnotesize\ttfamily \label{tetris_8h_a4880637c0a59d5fde810131c8e18bb81} 
+void fill\+\_\+next\+\_\+func (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structGameInfo__t}{Game\+Info\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{game\+\_\+info}{, }\item[{\mbox{\hyperlink{structTetromino}{Tetromino}} \texorpdfstring{$\ast$}{*}}]{next}{}\end{DoxyParamCaption})}
+
+
+
+Fills the next tetromino piece to be displayed on the game interface. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em game\+\_\+info} & Pointer to the game information structure. \\
+\hline
+{\em next} & Pointer to the next tetromino piece. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{tetris_8h_a1746639b2d6c8420e43ddf151adbbdeb}\index{tetris.h@{tetris.h}!finish\_game@{finish\_game}}
+\index{finish\_game@{finish\_game}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{finish\_game()}{finish\_game()}}
+{\footnotesize\ttfamily \label{tetris_8h_a1746639b2d6c8420e43ddf151adbbdeb} 
+void finish\+\_\+game (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structGame}{Game}} \texorpdfstring{$\ast$}{*}}]{game}{}\end{DoxyParamCaption})}
+
+
+
+Finalizes the game state, performing any necessary cleanup and displaying the final score. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em game} & Pointer to the current game instance. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{tetris_8h_a1a8ac7315a84974bc8ff9236ede9cd1e}\index{tetris.h@{tetris.h}!free\_matrix@{free\_matrix}}
+\index{free\_matrix@{free\_matrix}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{free\_matrix()}{free\_matrix()}}
+{\footnotesize\ttfamily \label{tetris_8h_a1a8ac7315a84974bc8ff9236ede9cd1e} 
+void free\+\_\+matrix (\begin{DoxyParamCaption}\item[{int \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{matrix}{, }\item[{int}]{rows}{}\end{DoxyParamCaption})}
+
+
+
+Frees the memory allocated for a 2D matrix of integers. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em matrix} & Pointer to the matrix to free. \\
+\hline
+{\em rows} & Number of rows in the matrix. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{tetris_8h_a3f9c3cc8730e1c2fe38ad0fcc98e46b8}\index{tetris.h@{tetris.h}!get\_current\_game\_info@{get\_current\_game\_info}}
+\index{get\_current\_game\_info@{get\_current\_game\_info}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{get\_current\_game\_info()}{get\_current\_game\_info()}}
+{\footnotesize\ttfamily \label{tetris_8h_a3f9c3cc8730e1c2fe38ad0fcc98e46b8} 
+\mbox{\hyperlink{structGame}{Game}} \texorpdfstring{$\ast$}{*} get\+\_\+current\+\_\+game\+\_\+info (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Retrieves the current game information, including the state of the game field and the active tetromino. 
+
+\begin{DoxyReturn}{Returns}
+Pointer to the current game information. 
+\end{DoxyReturn}
+\Hypertarget{tetris_8h_a4afc15012ef7afe4c0770d43a28cbbe8}\index{tetris.h@{tetris.h}!get\_time@{get\_time}}
+\index{get\_time@{get\_time}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{get\_time()}{get\_time()}}
+{\footnotesize\ttfamily \label{tetris_8h_a4afc15012ef7afe4c0770d43a28cbbe8} 
+long long get\+\_\+time (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Retrieves the current time in milliseconds. 
+
+\begin{DoxyReturn}{Returns}
+The current time in milliseconds. 
+\end{DoxyReturn}
+\Hypertarget{tetris_8h_a061120aabb46c6bfa3059861f383e5ec}\index{tetris.h@{tetris.h}!init\_all\_block\_types@{init\_all\_block\_types}}
+\index{init\_all\_block\_types@{init\_all\_block\_types}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{init\_all\_block\_types()}{init\_all\_block\_types()}}
+{\footnotesize\ttfamily \label{tetris_8h_a061120aabb46c6bfa3059861f383e5ec} 
+\mbox{\hyperlink{structTetrominoMap}{Tetromino\+Map}} \texorpdfstring{$\ast$}{*} init\+\_\+all\+\_\+block\+\_\+types (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Initializes all types of tetromino blocks. 
+
+\begin{DoxyReturn}{Returns}
+Pointer to the initialized tetromino map. 
+\end{DoxyReturn}
+\Hypertarget{tetris_8h_acb67defeb4732037f7839e155e47fa06}\index{tetris.h@{tetris.h}!init\_block\_I@{init\_block\_I}}
+\index{init\_block\_I@{init\_block\_I}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{init\_block\_I()}{init\_block\_I()}}
+{\footnotesize\ttfamily \label{tetris_8h_acb67defeb4732037f7839e155e47fa06} 
+void init\+\_\+block\+\_\+I (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structTetrominoMap}{Tetromino\+Map}} \texorpdfstring{$\ast$}{*}}]{tetris}{}\end{DoxyParamCaption})}
+
+
+
+Initializes the I-\/shaped tetromino block. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tetris} & Pointer to the tetromino map. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{tetris_8h_ae4ac3e5d32e888138bef613bf5a5c5c0}\index{tetris.h@{tetris.h}!init\_block\_J@{init\_block\_J}}
+\index{init\_block\_J@{init\_block\_J}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{init\_block\_J()}{init\_block\_J()}}
+{\footnotesize\ttfamily \label{tetris_8h_ae4ac3e5d32e888138bef613bf5a5c5c0} 
+void init\+\_\+block\+\_\+J (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structTetrominoMap}{Tetromino\+Map}} \texorpdfstring{$\ast$}{*}}]{tetris}{}\end{DoxyParamCaption})}
+
+
+
+Initializes the J-\/shaped tetromino block. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tetris} & Pointer to the tetromino map. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{tetris_8h_ae4bc5ec27c23f9c3ffa1824dc50fe014}\index{tetris.h@{tetris.h}!init\_block\_L@{init\_block\_L}}
+\index{init\_block\_L@{init\_block\_L}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{init\_block\_L()}{init\_block\_L()}}
+{\footnotesize\ttfamily \label{tetris_8h_ae4bc5ec27c23f9c3ffa1824dc50fe014} 
+void init\+\_\+block\+\_\+L (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structTetrominoMap}{Tetromino\+Map}} \texorpdfstring{$\ast$}{*}}]{tetris}{}\end{DoxyParamCaption})}
+
+
+
+Initializes the L-\/shaped tetromino block. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tetris} & Pointer to the tetromino map. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{tetris_8h_a085d01a65aa9fca1d585402aa1b66a57}\index{tetris.h@{tetris.h}!init\_block\_O@{init\_block\_O}}
+\index{init\_block\_O@{init\_block\_O}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{init\_block\_O()}{init\_block\_O()}}
+{\footnotesize\ttfamily \label{tetris_8h_a085d01a65aa9fca1d585402aa1b66a57} 
+void init\+\_\+block\+\_\+O (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structTetrominoMap}{Tetromino\+Map}} \texorpdfstring{$\ast$}{*}}]{tetris}{}\end{DoxyParamCaption})}
+
+
+
+Initializes the O-\/shaped tetromino block. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tetris} & Pointer to the tetromino map. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{tetris_8h_a8c072bd13b46d3d79cccd96e538fac68}\index{tetris.h@{tetris.h}!init\_block\_S@{init\_block\_S}}
+\index{init\_block\_S@{init\_block\_S}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{init\_block\_S()}{init\_block\_S()}}
+{\footnotesize\ttfamily \label{tetris_8h_a8c072bd13b46d3d79cccd96e538fac68} 
+void init\+\_\+block\+\_\+S (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structTetrominoMap}{Tetromino\+Map}} \texorpdfstring{$\ast$}{*}}]{tetris}{}\end{DoxyParamCaption})}
+
+
+
+Initializes the S-\/shaped tetromino block. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tetris} & Pointer to the tetromino map. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{tetris_8h_acf5719d7b7075ec81157e4a5c36ec7d6}\index{tetris.h@{tetris.h}!init\_block\_T@{init\_block\_T}}
+\index{init\_block\_T@{init\_block\_T}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{init\_block\_T()}{init\_block\_T()}}
+{\footnotesize\ttfamily \label{tetris_8h_acf5719d7b7075ec81157e4a5c36ec7d6} 
+void init\+\_\+block\+\_\+T (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structTetrominoMap}{Tetromino\+Map}} \texorpdfstring{$\ast$}{*}}]{tetris}{}\end{DoxyParamCaption})}
+
+
+
+Initializes the T-\/shaped tetromino block. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tetris} & Pointer to the tetromino map. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{tetris_8h_aef9b649c4799dbc1d725155fb3fa289e}\index{tetris.h@{tetris.h}!init\_block\_Z@{init\_block\_Z}}
+\index{init\_block\_Z@{init\_block\_Z}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{init\_block\_Z()}{init\_block\_Z()}}
+{\footnotesize\ttfamily \label{tetris_8h_aef9b649c4799dbc1d725155fb3fa289e} 
+void init\+\_\+block\+\_\+Z (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structTetrominoMap}{Tetromino\+Map}} \texorpdfstring{$\ast$}{*}}]{tetris}{}\end{DoxyParamCaption})}
+
+
+
+Initializes the Z-\/shaped tetromino block. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tetris} & Pointer to the tetromino map. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{tetris_8h_aecb7cc53b2b1f3b04631a185ee2f0cd8}\index{tetris.h@{tetris.h}!init\_game\_info@{init\_game\_info}}
+\index{init\_game\_info@{init\_game\_info}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{init\_game\_info()}{init\_game\_info()}}
+{\footnotesize\ttfamily \label{tetris_8h_aecb7cc53b2b1f3b04631a185ee2f0cd8} 
+\mbox{\hyperlink{structGameInfo__t}{Game\+Info\+\_\+t}} init\+\_\+game\+\_\+info (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Initializes the game information structure, setting up the initial state of the game. 
+
+\begin{DoxyReturn}{Returns}
+The initialized game information. 
+\end{DoxyReturn}
+\Hypertarget{tetris_8h_a09c5b3a159d7cf3eeb204178cabe5417}\index{tetris.h@{tetris.h}!init\_new\_block@{init\_new\_block}}
+\index{init\_new\_block@{init\_new\_block}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{init\_new\_block()}{init\_new\_block()}}
+{\footnotesize\ttfamily \label{tetris_8h_a09c5b3a159d7cf3eeb204178cabe5417} 
+void init\+\_\+new\+\_\+block (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structTetrominoMap}{Tetromino\+Map}} \texorpdfstring{$\ast$}{*}}]{blocks}{, }\item[{int}]{type}{, }\item[{\mbox{\hyperlink{structGame}{Game}} \texorpdfstring{$\ast$}{*}}]{game}{}\end{DoxyParamCaption})}
+
+
+
+Initializes a new tetromino block of the specified type. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em blocks} & Pointer to the tetromino map. \\
+\hline
+{\em type} & The type of the block to initialize. \\
+\hline
+{\em game} & Pointer to the current game instance. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{tetris_8h_aaa782037837daf0f46a1f113b4b3640f}\index{tetris.h@{tetris.h}!init\_new\_map\_block@{init\_new\_map\_block}}
+\index{init\_new\_map\_block@{init\_new\_map\_block}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{init\_new\_map\_block()}{init\_new\_map\_block()}}
+{\footnotesize\ttfamily \label{tetris_8h_aaa782037837daf0f46a1f113b4b3640f} 
+void init\+\_\+new\+\_\+map\+\_\+block (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structTetrominoMap}{Tetromino\+Map}} \texorpdfstring{$\ast$}{*}}]{blocks}{, }\item[{int}]{type}{}\end{DoxyParamCaption})}
+
+
+
+Initializes a new block in the tetromino map based on the specified type. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em blocks} & Pointer to the tetromino map. \\
+\hline
+{\em type} & The type of the block to initialize. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{tetris_8h_a8b5c99f3cead346a21c0024c5183d8c2}\index{tetris.h@{tetris.h}!move\_block\_down@{move\_block\_down}}
+\index{move\_block\_down@{move\_block\_down}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{move\_block\_down()}{move\_block\_down()}}
+{\footnotesize\ttfamily \label{tetris_8h_a8b5c99f3cead346a21c0024c5183d8c2} 
+void move\+\_\+block\+\_\+down (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structGame}{Game}} \texorpdfstring{$\ast$}{*}}]{game}{}\end{DoxyParamCaption})}
+
+
+
+Moves the current tetromino piece down by one row in the game field. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em game} & Pointer to the current game instance. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{tetris_8h_ad2e09229c416ae377fd32662f88fc9fc}\index{tetris.h@{tetris.h}!move\_figure@{move\_figure}}
+\index{move\_figure@{move\_figure}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{move\_figure()}{move\_figure()}}
+{\footnotesize\ttfamily \label{tetris_8h_ad2e09229c416ae377fd32662f88fc9fc} 
+void move\+\_\+figure (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structGame}{Game}} \texorpdfstring{$\ast$}{*}}]{game}{}\end{DoxyParamCaption})}
+
+
+
+Handles the movement of the current tetromino piece based on user input and game logic. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em game} & Pointer to the current game instance. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{tetris_8h_a1650ac61287b4e45cfc2e3a4f6009eae}\index{tetris.h@{tetris.h}!move\_right\_or\_left@{move\_right\_or\_left}}
+\index{move\_right\_or\_left@{move\_right\_or\_left}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{move\_right\_or\_left()}{move\_right\_or\_left()}}
+{\footnotesize\ttfamily \label{tetris_8h_a1650ac61287b4e45cfc2e3a4f6009eae} 
+void move\+\_\+right\+\_\+or\+\_\+left (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structGame}{Game}} \texorpdfstring{$\ast$}{*}}]{game}{, }\item[{int}]{direction}{}\end{DoxyParamCaption})}
+
+
+
+Moves the current tetromino piece to the right or left based on the specified direction. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em game} & Pointer to the current game instance. \\
+\hline
+{\em direction} & Direction to move (1 for right, -\/1 for left). \\
+\hline
+\end{DoxyParams}
+\Hypertarget{tetris_8h_ad5d778edc86e7471eb54d90e07c84014}\index{tetris.h@{tetris.h}!move\_to\_bottom@{move\_to\_bottom}}
+\index{move\_to\_bottom@{move\_to\_bottom}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{move\_to\_bottom()}{move\_to\_bottom()}}
+{\footnotesize\ttfamily \label{tetris_8h_ad5d778edc86e7471eb54d90e07c84014} 
+void move\+\_\+to\+\_\+bottom (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structGame}{Game}} \texorpdfstring{$\ast$}{*}}]{game}{}\end{DoxyParamCaption})}
+
+
+
+Moves the current tetromino piece down to the lowest possible position in the game field. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em game} & Pointer to the current game instance. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{tetris_8h_a311859203a6603ad61c6ef242bfa1843}\index{tetris.h@{tetris.h}!process\_input@{process\_input}}
+\index{process\_input@{process\_input}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{process\_input()}{process\_input()}}
+{\footnotesize\ttfamily \label{tetris_8h_a311859203a6603ad61c6ef242bfa1843} 
+void process\+\_\+input (\begin{DoxyParamCaption}\item[{int}]{c}{}\end{DoxyParamCaption})}
+
+
+
+Processes user input from the keyboard, translating key presses into game actions. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em c} & The character input from the user. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{tetris_8h_af7fa1906f30e236f2146834a3b1e3237}\index{tetris.h@{tetris.h}!process\_rotation@{process\_rotation}}
+\index{process\_rotation@{process\_rotation}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{process\_rotation()}{process\_rotation()}}
+{\footnotesize\ttfamily \label{tetris_8h_af7fa1906f30e236f2146834a3b1e3237} 
+void process\+\_\+rotation (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structGame}{Game}} \texorpdfstring{$\ast$}{*}}]{game}{}\end{DoxyParamCaption})}
+
+
+
+Handles the rotation of the current tetromino piece. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em game} & Pointer to the current game instance. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{tetris_8h_a5f7a621f88fdb38ee62f4632b5236784}\index{tetris.h@{tetris.h}!put\_block@{put\_block}}
+\index{put\_block@{put\_block}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{put\_block()}{put\_block()}}
+{\footnotesize\ttfamily \label{tetris_8h_a5f7a621f88fdb38ee62f4632b5236784} 
+void put\+\_\+block (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structGame}{Game}} \texorpdfstring{$\ast$}{*}}]{game}{, }\item[{\mbox{\hyperlink{structTetromino}{Tetromino}} \texorpdfstring{$\ast$}{*}}]{block}{}\end{DoxyParamCaption})}
+
+
+
+Places the specified tetromino block onto the game field. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em game} & Pointer to the current game instance. \\
+\hline
+{\em block} & Pointer to the tetromino block to place. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{tetris_8h_a7334ed9f934fa6f82809b7781f958939}\index{tetris.h@{tetris.h}!remove\_block@{remove\_block}}
+\index{remove\_block@{remove\_block}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{remove\_block()}{remove\_block()}}
+{\footnotesize\ttfamily \label{tetris_8h_a7334ed9f934fa6f82809b7781f958939} 
+void remove\+\_\+block (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structGame}{Game}} \texorpdfstring{$\ast$}{*}}]{game}{, }\item[{\mbox{\hyperlink{structTetromino}{Tetromino}} \texorpdfstring{$\ast$}{*}}]{block}{}\end{DoxyParamCaption})}
+
+
+
+Removes the specified tetromino block from the game field. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em game} & Pointer to the current game instance. \\
+\hline
+{\em block} & Pointer to the tetromino block to remove. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{tetris_8h_ac83b0a6289e8fb04388e82b0d0271efb}\index{tetris.h@{tetris.h}!rotate\_block@{rotate\_block}}
+\index{rotate\_block@{rotate\_block}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{rotate\_block()}{rotate\_block()}}
+{\footnotesize\ttfamily \label{tetris_8h_ac83b0a6289e8fb04388e82b0d0271efb} 
+\mbox{\hyperlink{structTetromino}{Tetromino}} \texorpdfstring{$\ast$}{*} rotate\+\_\+block (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structTetromino}{Tetromino}} \texorpdfstring{$\ast$}{*}}]{block}{, }\item[{\mbox{\hyperlink{structTetrominoMap}{Tetromino\+Map}} \texorpdfstring{$\ast$}{*}}]{blocks}{, }\item[{int}]{shift}{}\end{DoxyParamCaption})}
+
+
+
+Rotates the specified tetromino block based on the shift parameter. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em block} & Pointer to the tetromino block to rotate. \\
+\hline
+{\em blocks} & Pointer to the tetromino map. \\
+\hline
+{\em shift} & Parameter for rotation (3 for right, 1 for left). \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to the rotated tetromino block. 
+\end{DoxyReturn}
+\Hypertarget{tetris_8h_aac13c96258ba755a57ddf07e83825c57}\index{tetris.h@{tetris.h}!state\_machine@{state\_machine}}
+\index{state\_machine@{state\_machine}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{state\_machine()}{state\_machine()}}
+{\footnotesize\ttfamily \label{tetris_8h_aac13c96258ba755a57ddf07e83825c57} 
+void state\+\_\+machine (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structGame}{Game}} \texorpdfstring{$\ast$}{*}}]{game}{}\end{DoxyParamCaption})}
+
+
+
+Implements the game state machine, managing transitions between different game states. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em game} & Pointer to the current game instance. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{tetris_8h_a11f2df64fb2f4aca618592fcd95f461b}\index{tetris.h@{tetris.h}!timer@{timer}}
+\index{timer@{timer}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{timer()}{timer()}}
+{\footnotesize\ttfamily \label{tetris_8h_a11f2df64fb2f4aca618592fcd95f461b} 
+int timer (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structGame}{Game}} \texorpdfstring{$\ast$}{*}}]{gs}{, }\item[{int}]{delay}{}\end{DoxyParamCaption})}
+
+
+
+Implements a timer function that manages the game speed. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em gs} & Pointer to the current game instance. \\
+\hline
+{\em delay} & Delay in milliseconds for the timer. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The elapsed time. 
+\end{DoxyReturn}
+\Hypertarget{tetris_8h_afd5762991a9248a0b4192983fd786a8f}\index{tetris.h@{tetris.h}!updateCurrentState@{updateCurrentState}}
+\index{updateCurrentState@{updateCurrentState}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{updateCurrentState()}{updateCurrentState()}}
+{\footnotesize\ttfamily \label{tetris_8h_afd5762991a9248a0b4192983fd786a8f} 
+\mbox{\hyperlink{structGameInfo__t}{Game\+Info\+\_\+t}} update\+Current\+State (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Updates the current game state, including moving the tetromino down automatically based on the game speed. 
+
+\begin{DoxyReturn}{Returns}
+The updated game information. 
+\end{DoxyReturn}
+\Hypertarget{tetris_8h_ab961f91e569a34b6984536633126257a}\index{tetris.h@{tetris.h}!userInput@{userInput}}
+\index{userInput@{userInput}!tetris.h@{tetris.h}}
+\doxysubsubsection{\texorpdfstring{userInput()}{userInput()}}
+{\footnotesize\ttfamily \label{tetris_8h_ab961f91e569a34b6984536633126257a} 
+void user\+Input (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{tetris_8h_a7ba289d7b97db30e0b7041ca2cef75a9}{User\+Action\+\_\+t}}}]{action}{, }\item[{bool}]{hold}{}\end{DoxyParamCaption})}
+
+
+
+Handles user input to control the game actions based on the specified action. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em action} & The user action to be processed. \\
+\hline
+{\em hold} & Indicates whether the action is a hold action. \\
+\hline
+\end{DoxyParams}

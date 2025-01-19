@@ -1,0 +1,70 @@
+\doxysection{Game Struct Reference}
+\hypertarget{structGame}{}\label{structGame}\index{Game@{Game}}
+
+
+Represents the current state of the game.  
+
+
+
+
+{\ttfamily \#include $<$tetris.\+h$>$}
+
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{structGame_a648e1e5b37ad65c3de25121c78caad57}{is\+\_\+playing}}
+\item 
+\Hypertarget{structGame_a9164e338856ab67d3f113cbd744b1a3a}\label{structGame_a9164e338856ab67d3f113cbd744b1a3a} 
+int {\bfseries cleared}
+\begin{DoxyCompactList}\small\item\em The number of lines cleared in the current game. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{structGame_a2701a51998fa821c85b40a280e8f184e}{new\+\_\+input}}
+\item 
+\Hypertarget{structGame_a3686dfe8e54d256bd467ee530fb6f14f}\label{structGame_a3686dfe8e54d256bd467ee530fb6f14f} 
+\mbox{\hyperlink{structTetromino}{Tetromino}} \texorpdfstring{$\ast$}{*} {\bfseries next}
+\begin{DoxyCompactList}\small\item\em Pointer to the next tetromino to be spawned. \end{DoxyCompactList}\item 
+\Hypertarget{structGame_a2c7f08ccec914ff44d00cf5c5f52f536}\label{structGame_a2c7f08ccec914ff44d00cf5c5f52f536} 
+\mbox{\hyperlink{structTetromino}{Tetromino}} \texorpdfstring{$\ast$}{*} {\bfseries current}
+\begin{DoxyCompactList}\small\item\em Pointer to the currently active tetromino. \end{DoxyCompactList}\item 
+\Hypertarget{structGame_ad5b392a0d78f329460a06011d8c6bff7}\label{structGame_ad5b392a0d78f329460a06011d8c6bff7} 
+\mbox{\hyperlink{tetris_8h_adc6e5733fc3c22f0a7b2914188c49c90}{state}} {\bfseries state}
+\begin{DoxyCompactList}\small\item\em The current state of the game. \end{DoxyCompactList}\item 
+\Hypertarget{structGame_a5ef7878516e18d17d768c5829e718931}\label{structGame_a5ef7878516e18d17d768c5829e718931} 
+long long {\bfseries time}
+\begin{DoxyCompactList}\small\item\em The elapsed time since the game started. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structGameInfo__t}{Game\+Info\+\_\+t}} \mbox{\hyperlink{structGame_a453af43f7974d4be7ce5a1c2e1cbcd6f}{game\+\_\+info}}
+\item 
+\Hypertarget{structGame_a379f45bb06b33c13c43f3e0e5e648d0b}\label{structGame_a379f45bb06b33c13c43f3e0e5e648d0b} 
+\mbox{\hyperlink{tetris_8h_a7ba289d7b97db30e0b7041ca2cef75a9}{User\+Action\+\_\+t}} {\bfseries action}
+\begin{DoxyCompactList}\small\item\em The current user action being processed. \end{DoxyCompactList}\item 
+\Hypertarget{structGame_a613ec7f0b6980637bedc747883fc944a}\label{structGame_a613ec7f0b6980637bedc747883fc944a} 
+\mbox{\hyperlink{structTetrominoMap}{Tetromino\+Map}} \texorpdfstring{$\ast$}{*} {\bfseries blocks}
+\begin{DoxyCompactList}\small\item\em Pointer to the tetromino map. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents the current state of the game. 
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{structGame_a453af43f7974d4be7ce5a1c2e1cbcd6f}\index{Game@{Game}!game\_info@{game\_info}}
+\index{game\_info@{game\_info}!Game@{Game}}
+\doxysubsubsection{\texorpdfstring{game\_info}{game\_info}}
+{\footnotesize\ttfamily \label{structGame_a453af43f7974d4be7ce5a1c2e1cbcd6f} 
+\mbox{\hyperlink{structGameInfo__t}{Game\+Info\+\_\+t}} Game\+::game\+\_\+info}
+
+The game information structure containing various game stats. \Hypertarget{structGame_a648e1e5b37ad65c3de25121c78caad57}\index{Game@{Game}!is\_playing@{is\_playing}}
+\index{is\_playing@{is\_playing}!Game@{Game}}
+\doxysubsubsection{\texorpdfstring{is\_playing}{is\_playing}}
+{\footnotesize\ttfamily \label{structGame_a648e1e5b37ad65c3de25121c78caad57} 
+int Game\+::is\+\_\+playing}
+
+Flag indicating whether the game is currently being played (1 for playing, 0 for not). \Hypertarget{structGame_a2701a51998fa821c85b40a280e8f184e}\index{Game@{Game}!new\_input@{new\_input}}
+\index{new\_input@{new\_input}!Game@{Game}}
+\doxysubsubsection{\texorpdfstring{new\_input}{new\_input}}
+{\footnotesize\ttfamily \label{structGame_a2701a51998fa821c85b40a280e8f184e} 
+int Game\+::new\+\_\+input}
+
+Flag indicating whether new user input has been received (1 for yes, 0 for no). 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+brick\+\_\+game/tetris/\mbox{\hyperlink{tetris_8h}{tetris.\+h}}\end{DoxyCompactItemize}

@@ -4,7 +4,7 @@
 #define WIDTH 10
 #define HEIGHT 20
 #define MAX_LEVEL 10
-#define GAME_SPEED 2000
+#define GAME_SPEED 500
 #include <math.h>
 #include <ncurses.h>
 #include <stdio.h>
@@ -157,8 +157,11 @@ typedef struct {
 typedef struct {
   TetrisType type;  ///< The type of the tetromino.
   int orientation;  ///< The current orientation of the tetromino (0-3 for 0°,
-  position location;  ///< The current location
+                    ///< 90°, 180°, 270°).
+  position
+      location;  ///< The current location of the tetromino on the game field.
   position state[4];  ///< The positions of the tetromino's blocks in its
+                      ///< current orientation.
 } Tetromino;
 
 /**
@@ -171,7 +174,8 @@ typedef struct {
   int high_score;  ///< The highest score achieved in the game.
   int score;       ///< The current score of the player.
   int level;       ///< The current level of the game.
-  int pause;  ///< Flag indicating whether the game is paused (1 for paused, 0)
+  int pause;  ///< Flag indicating whether the game is paused (1 for paused, 0
+              ///< for not).
   int speed;  ///< The speed of the game (e.g., how fast tetrominoes fall).
 } GameInfo_t;
 
@@ -180,13 +184,17 @@ typedef struct {
  * @brief Represents the current state of the game.
  */
 typedef struct {
-  int cleared;    ///< The number of lines cleared in the current game.
-  int new_input;  ///< Flag indicating whether new user input has been received
+  int is_playing;  ///< Flag indicating whether the game is currently being
+                   ///< played (1 for playing, 0 for not).
+  int cleared;     ///< The number of lines cleared in the current game.
+  int new_input;   ///< Flag indicating whether new user input has been received
+                   ///< (1 for yes, 0 for no).
   Tetromino *next;       ///< Pointer to the next tetromino to be spawned.
   Tetromino *current;    ///< Pointer to the currently active tetromino.
   state state;           ///< The current state of the game.
   long long time;        ///< The elapsed time since the game started.
   GameInfo_t game_info;  ///< The game information structure containing various
+                         ///< game stats.
   UserAction_t action;   ///< The current user action being processed.
   TetrominoMap *blocks;  ///< Pointer to the tetromino map
 } Game;

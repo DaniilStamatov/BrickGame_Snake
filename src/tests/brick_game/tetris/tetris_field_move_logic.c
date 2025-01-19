@@ -3,8 +3,9 @@
 void init_game(Game *game) {
   game->state = SPAWN;
   game->cleared = 0;
+  game->is_playing = 1;
   game->blocks = init_all_block_types();
-  game->time = clock();
+  game->time = get_time();
   game->current = malloc(sizeof(Tetromino));
   game->next = malloc(sizeof(Tetromino));
   init_new_block(game->blocks, rand() % 7, game);
@@ -16,7 +17,7 @@ GameInfo_t init_game_info() {
   game.score = 0;
   game.level = 1;
   game.pause = 0;
-  game.speed = GAME_SPEED * pow(0.8, game.level);
+  game.speed = GAME_SPEED;
   game.next = create_matrix(4, 4);
   game.field = create_matrix(HEIGHT, WIDTH);
   FILE *file = fopen("high_score.txt", "r");
@@ -107,12 +108,11 @@ void create_new_falling(Game *game) {
   if (game->current == NULL) {
     game->current = malloc(sizeof(Tetromino));
   }
-  check_lines_full(game);
   fill_current_from_next(game);
   game->current->location = (position){3, 0};
   init_new_block(game->blocks, rand() % 7, game);
   fill_next_func(&game->game_info, game->next);
-  game->time = clock();
+  game->time = get_time();
   game->state = check_block_fits(game, game->current) ? MOVING : GAME_OVER;
 }
 
@@ -136,12 +136,12 @@ void move_block_down(Game *game) {
   game->current->location.y++;
   if (check_block_fits(game, game->current)) {
     game->state = MOVING;
-    put_block(game, game->current);
   } else {
     game->current->location.y--;
-    put_block(game, game->current);
+    check_lines_full(game);
     game->state = SPAWN;
   }
+  put_block(game, game->current);
 }
 
 void move_right_or_left(Game *game, int direction) {
@@ -161,6 +161,7 @@ void move_to_bottom(Game *game) {
   }
   game->current->location.y--;
   put_block(game, game->current);
+  check_lines_full(game);
   game->state = SPAWN;
 }
 
