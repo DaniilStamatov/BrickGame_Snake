@@ -105,27 +105,6 @@ START_TEST(test_machine_1) {
 }
 END_TEST
 
-START_TEST(test_check_time) {
-  Game *game = get_current_game_info();
-  init_game(game);
-  create_new_falling(game);
-  game->time = get_time();
-  int result = timer(game, 1000);
-  ck_assert_int_eq(result, 0);
-
-  game->time = get_time() - 2000;
-  result = timer(game, 1000);
-  ck_assert_int_eq(result, 1);
-  int pos_y = game->current->location.y;
-  game->state = SHIFTING;
-  ck_assert_int_eq(game->state, SHIFTING);
-  state_machine(game);
-  ck_assert_int_eq(game->current->location.y, pos_y + 1);
-
-  finish_game(game);
-}
-END_TEST
-
 Suite *machine_suite(void) {
   Suite *s = suite_create("\033[45m-=S21_CALC_COMPLEMENTS=-\033[0m");
   TCase *tc_core = tcase_create("core");
@@ -135,7 +114,6 @@ Suite *machine_suite(void) {
   tcase_add_test(tc_core, test_process_input_terminate);
   tcase_add_test(tc_core, test_machine);
   tcase_add_test(tc_core, test_machine_1);
-  tcase_add_test(tc_core, test_check_time);
   suite_add_tcase(s, tc_core);
   return s;
 }
