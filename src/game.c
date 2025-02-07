@@ -1,4 +1,3 @@
-#include "brick_game/tetris/tetris.h"
 #include "gui/cli/renderer.h"
 
 int main() {

@@ -1,26 +1,24 @@
-CC = gcc
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = gcc -Wall -Wextra -Werror -std=c11 -g
+CPPFLAGS = g++ -Wall -Wextra -Werror -std=c++17 -g
 GCOV_FLAGS= -fprofile-arcs -ftest-coverage
 LDFLAGS = -lncurses -lm
 CHECK_LIBS = -lcheck -lm
 TETRIS_LIB = ./tetris.a
 OBJ_DIR = ./build
 GAME = ./game.c
+SNAKE_GAME = ./snake_main.cpp
 TEST_DIR = ./tests
 FRONTEND = ./gui/cli/renderer.c
-TEST_SRC=$(wildcard $(TEST_DIR)/test_*.c) ./tests/tests.c
+TEST_SRC =$(wildcard $(TEST_DIR)/test_*.c) ./tests/tests.c
+
 TETRIS_SOURCES = $(wildcard ./brick_game/tetris/*.c)
 OBJS = $(patsubst ./brick_game/tetris/%.c, $(OBJ_DIR)/brick_game/tetris/%.o, $(TETRIS_SOURCES))
+
+SNAKE_SOURCES = $(wildcard $(addsuffix /*.cpp, $(SNAKE_DIRS)))
+SNAKE_DIRS = brick_game/snake/controller brick_game/snake/model
+SNAKE_OBJS = $(patsubst ./brick_game/snake/%.cpp, $(OBJ_DIR)/snake/%.o, $(SNAKE_SOURCES))
+
 DIST_DIR=archive
-
-ifeq ($(OS_NAME),Linux)
-OPEN = xdg-open
-endif
-
-ifeq ($(OS_NAME),Darwin)
-OPEN = open
-endif
-
 
 all: $(TETRIS_LIB) install 
 	$(OBJ_DIR)/tetris
@@ -31,15 +29,33 @@ uninstall:
 	rm $(OBJ_DIR)/tetris
 
 tetris: $(GAME) $(FRONTEND) $(TETRIS_LIB)
-	$(CC) $(CFLAGS) -o $(OBJ_DIR)/$@ $^ $(LDFLAGS)
+	$(CFLAGS) -o $(OBJ_DIR)/$@ $^ $(LDFLAGS)  -DTETRIS
+
+snake: snake.a
+	$(CPPFLAGS) -o $(OBJ_DIR)/snake.o $(SNAKE_OBJS)  $(SNAKE_GAME) $(FRONTEND) $(LDFLAGS) -DSNAKE
+
+snake.a: $(SNAKE_OBJS)
+	mkdir -p $(OBJ_DIR)/snake
+	ar rc $@ $^
+	ranlib $@
+
+# Rules for compiling Snake C++ files
+$(OBJ_DIR)/snake/controller/%.o: ./brick_game/snake/controller/%.cpp
+	@mkdir -p $(dir $@)
+	$(CPPFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/snake/model/%.o: ./brick_game/snake/model/%.cpp
+	@mkdir -p $(dir $@)
+	$(CPPFLAGS) -c $< -o $@
+
+# Rules for compiling Tetris C files
+$(OBJ_DIR)/brick_game/tetris/%.o: ./brick_game/tetris/%.c
+	@mkdir -p $(dir $@)
+	$(CFLAGS) -c $< -o $@
 
 $(TETRIS_LIB): $(OBJS)
 	ar rc $@ $^
 	ranlib $@
-
-$(OBJ_DIR)/brick_game/tetris/%.o: ./brick_game/tetris/%.c
-	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
 
 dist: clean_dist
 	cd ../ && mkdir -p ${DIST_DIR}

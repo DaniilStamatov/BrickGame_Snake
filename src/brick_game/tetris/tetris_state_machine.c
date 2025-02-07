@@ -20,11 +20,6 @@ void process_input(int c) {
   }
 }
 
-Game *get_current_game_info() {
-  static Game game_info_ex = {0};
-  return &game_info_ex;
-}
-
 void move_figure(Game *game) {
   if (game->new_input) {
     if (game->action == Terminate) {

@@ -1,4 +1,5 @@
-#include "renderer.h"
+#include "../../../brick_game/snake/controller/controller.h"
+#include "../renderer.h"
 
 void renderer_main(GameInfo_t game_info) {
   clear();
@@ -18,6 +19,18 @@ void renderer_main(GameInfo_t game_info) {
     print_border();
   }
   refresh();
+}
+
+void print_field(GameInfo_t g) {
+  for (int i = 0; i < HEIGHT; i++) {
+    for (int j = 0; j < WIDTH; j++) {
+      if (g.field[i][j] == 0) {
+        ADD_EMPTY(i, j * 2 + 1);
+      } else {
+        ADD_BLOCK(i, j * 2 + 1, g.field[i][j]);
+      }
+    }
+  }
 }
 
 void print_border() {
@@ -56,24 +69,6 @@ void init_colors() {
   start_color();
   init_pair(1, COLOR_WHITE, COLOR_CYAN);
   init_pair(2, COLOR_WHITE, COLOR_GREEN);
-  init_pair(3, COLOR_WHITE, COLOR_YELLOW);
-  init_pair(4, COLOR_WHITE, COLOR_MAGENTA);
-  init_pair(5, COLOR_WHITE, COLOR_GREEN);
-  init_pair(6, COLOR_WHITE, COLOR_RED);
-  init_pair(7, COLOR_WHITE, COLOR_BLUE);
-  init_pair(8, COLOR_WHITE, COLOR_WHITE);
-}
-
-void print_field(GameInfo_t g) {
-  for (int i = 0; i < HEIGHT; i++) {
-    for (int j = 0; j < WIDTH; j++) {
-      if (g.field[i][j] == 0) {
-        ADD_EMPTY(i + 1, j * 2 + 1);
-      } else {
-        ADD_BLOCK(i + 1, j * 2 + 1, g.field[i][j]);
-      }
-    }
-  }
 }
 
 void display_score(GameInfo_t game) {
@@ -83,16 +78,6 @@ void display_score(GameInfo_t game) {
   mvprintw(4, 24, "%d", game.score);
   mvprintw(6, 24, "LEVEL:");
   mvprintw(7, 24, "%d", game.level);
-  if(game.next) {
-    mvaddstr(9, 24, "NEXT:");
-    for (int i = 0; i < 4; ++i) {
-      for (int j = 0; j < 4; ++j) {
-        if (game.next[i][j] != 0) {
-          ADD_BLOCK(14 + i, 24 + j * 2 + 1, game.next[i][j]);
-        }
-      }
-    }
-  }
 }
 
 void print_game_over_field(GameInfo_t game) {
@@ -115,26 +100,6 @@ void init_ncurses() {
   mouseinterval(1);
   keypad(stdscr, TRUE);
   init_colors();
-}
-
-void process_input(int c) {
-  if (c == 'r') {
-    userInput(Start, false);
-  } else if (c == 'p') {
-    userInput(Pause, false);
-  } else if (c == 'q') {
-    userInput(Terminate, false);
-  } else if (c == KEY_LEFT) {
-    userInput(Left, false);
-  } else if (c == KEY_RIGHT) {
-    userInput(Right, false);
-  } else if (c == KEY_UP) {
-    userInput(Up, false);
-  } else if (c == KEY_DOWN) {
-    userInput(Down, false);
-  } else if (c == ' ') {
-    userInput(Action, false);
-  }
 }
 
 void clear_ncurses() {

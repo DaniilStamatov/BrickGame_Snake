@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include "../common.h"
 
 /**
  * @file tetris_game.h
@@ -116,16 +117,7 @@ typedef struct position {
  * @enum UserAction_t
  * @brief Represents user actions in the game.
  */
-typedef enum {
-  Start,      ///< Action to start the game.
-  Pause,      ///< Action to pause the game.
-  Terminate,  ///< Action to terminate the game.
-  Left,       ///< Action to move the tetromino left.
-  Right,      ///< Action to move the tetromino right.
-  Up,         ///< Action to move the tetromino up.
-  Down,       ///< Action to move the tetromino down.
-  Action      ///< Action to perform a specific game action (e.g., rotate).
-} UserAction_t;
+
 
 /**
  * @enum TetrisType
@@ -165,16 +157,6 @@ typedef struct {
  * @struct GameInfo_t
  * @brief Contains information about the current game state.
  */
-typedef struct {
-  int **field;     ///< The game field represented as a 2D array of integers.
-  int **next;      ///< The next tetromino to be spawned.
-  int high_score;  ///< The highest score achieved in the game.
-  int score;       ///< The current score of the player.
-  int level;       ///< The current level of the game.
-  int pause;  ///< Flag indicating whether the game is paused (1 for paused, 0)
-  int speed;  ///< The speed of the game (e.g., how fast tetrominoes fall).
-} GameInfo_t;
-
 /**
  * @struct Game
  * @brief Represents the current state of the game.
