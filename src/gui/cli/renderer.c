@@ -2,20 +2,22 @@
 
 void renderer_main(GameInfo_t game_info) {
   clear();
+   if (game_info.pause == PLAYING) {
+    print_border();
+  }
   if (game_info.field == NULL) {
     print_main_menu();
   } else {
     print_field(game_info);
     display_score(game_info);
   }
-  if (game_info.pause == 1) {
+  
+ 
+  if (game_info.pause == PAUSE) {
     print_pause_menu();
   }
-  if (game_info.pause == 2) {
+  if (game_info.pause == GAME_OVER) {
     print_game_over_field(game_info);
-  }
-  if (game_info.pause == 0) {
-    print_border();
   }
   refresh();
 }
@@ -23,7 +25,7 @@ void renderer_main(GameInfo_t game_info) {
 void print_border() {
   const char border = '|';
   const char border1 = '-';
-  int row = 22, col = 22;
+  int row = HEIGHT + 2, col = WIDTH * 2 + 2;
   for (int i = 0; i < row; i++)
     for (int j = 0; j < col; j++) {
       if (i == 0) {
@@ -43,12 +45,12 @@ void print_border() {
 
 void print_main_menu() {
   attron(COLOR_PAIR(3));
-  mvaddstr(10, 2, "Press 'r' to start");
+  mvaddstr(10, 0, "Press 'Enter' to start");
   attroff(COLOR_PAIR(3));
 }
 void print_pause_menu() {
   attron(COLOR_PAIR(3));
-  mvaddstr(10, 2, "Paused! Press 'r' to start");
+  mvaddstr(10, 0, "Paused! Press Enter to start");
   attroff(COLOR_PAIR(3));
 }
 
@@ -77,14 +79,15 @@ void print_field(GameInfo_t g) {
 }
 
 void display_score(GameInfo_t game) {
-  mvaddstr(0, 24, "HIGH SCORE:");
-  mvprintw(1, 24, "%d", game.high_score);
-  mvprintw(3, 24, "SCORE:");
-  mvprintw(4, 24, "%d", game.score);
-  mvprintw(6, 24, "LEVEL:");
-  mvprintw(7, 24, "%d", game.level);
+  int shift_x = WIDTH * 2 + 4;
+  mvaddstr(0, shift_x, "HIGH SCORE:");
+  mvprintw(1, shift_x, "%d", game.high_score);
+  mvprintw(3, shift_x, "SCORE:");
+  mvprintw(4, shift_x, "%d", game.score);
+  mvprintw(6, shift_x, "LEVEL:");
+  mvprintw(7, shift_x, "%d", game.level);
   if(game.next) {
-    mvaddstr(9, 24, "NEXT:");
+    mvaddstr(9, shift_x, "NEXT:");
     for (int i = 0; i < 4; ++i) {
       for (int j = 0; j < 4; ++j) {
         if (game.next[i][j] != 0) {
@@ -99,7 +102,7 @@ void print_game_over_field(GameInfo_t game) {
   clear();
   attron(COLOR_PAIR(2));
   mvprintw(10, 2, "GAME OVER!! YOUR SCORE: %d", game.score);
-  mvaddstr(12, 2, "Press 'r' to restart");
+  mvaddstr(12, 2, "Press 'Enter' to restart");
   attroff(COLOR_PAIR(2));
   refresh();
 }
@@ -108,19 +111,16 @@ void init_ncurses() {
   initscr();
   cbreak();
   noecho();
-  keypad(stdscr, 1);
-  halfdelay(1);
-  scrollok(stdscr, 1);
-  curs_set(0);
-  mouseinterval(1);
   keypad(stdscr, TRUE);
+  halfdelay(1);
+  curs_set(0);
   init_colors();
 }
 
 void process_input(int c) {
-  if (c == 'r') {
+  if (c == '\n') {
     userInput(Start, false);
-  } else if (c == 'p') {
+  } else if (c == ' ') {
     userInput(Pause, false);
   } else if (c == 'q') {
     userInput(Terminate, false);
@@ -132,7 +132,7 @@ void process_input(int c) {
     userInput(Up, false);
   } else if (c == KEY_DOWN) {
     userInput(Down, false);
-  } else if (c == ' ') {
+  } else if (c == 'r') {
     userInput(Action, false);
   }
 }
@@ -140,4 +140,20 @@ void process_input(int c) {
 void clear_ncurses() {
   wclear(stdscr);
   endwin();
+}
+
+void GameLoop() {
+  init_ncurses();
+  srand(time(NULL));
+  clock_t prev_time = clock();
+  GameInfo_t game_info;
+  while (game_info.pause != TERMINATE) {
+    clock_t current = clock();
+    float deltatime = (float)(current - prev_time);
+    prev_time = current;
+    game_info = updateCurrentState(deltatime);
+    renderer_main(game_info);
+    process_input(getch());
+  }
+  clear_ncurses();
 }

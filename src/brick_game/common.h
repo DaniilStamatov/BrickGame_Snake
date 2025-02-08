@@ -2,6 +2,14 @@
 #define HEIGHT 20
 #define WIDTH 10
 #define SCALE (HEIGHT * WIDTH)
+
+typedef enum {
+    PLAYING = 0,
+    PAUSE = 1,
+    GAME_OVER = 2,
+    TERMINATE = 3
+} PauseState;
+
 typedef enum {
     Start,
     Pause,
@@ -22,4 +30,3 @@ typedef struct {
     int speed;
     int pause;
 } GameInfo_t;
-

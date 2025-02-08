@@ -1,32 +1,11 @@
 #include "tetris.h"
-
-void process_input(int c) {
-  if (c == 'r') {
-    userInput(Start, false);
-  } else if (c == 'p') {
-    userInput(Pause, false);
-  } else if (c == 'q') {
-    userInput(Terminate, false);
-  } else if (c == KEY_LEFT) {
-    userInput(Left, false);
-  } else if (c == KEY_RIGHT) {
-    userInput(Right, false);
-  } else if (c == KEY_UP) {
-    userInput(Up, false);
-  } else if (c == KEY_DOWN) {
-    userInput(Down, false);
-  } else if (c == ' ') {
-    userInput(Action, false);
-  }
-}
-
 void move_figure(Game *game) {
   if (game->new_input) {
     if (game->action == Terminate) {
       game->game_info.pause = 3;
       finish_game(game);
     } else if (game->action == Pause) {
-      game->state = PAUSE;
+      game->state = GAME_PAUSED;
       game->game_info.pause = 1;
     } else if (game->action == Left)
       move_right_or_left(game, -1);
@@ -76,10 +55,10 @@ void state_machine(Game *game) {
     move_block_down(game);
   } else if (game->state == MOVING) {
     move_figure(game);
-  } else if (game->state == GAME_OVER) {
+  } else if (game->state == GAME_LOST) {
     game->game_info.pause = 2;
     game->state = START;
-  } else if (game->state == PAUSE) {
+  } else if (game->state == GAME_PAUSED) {
     pause_state(game);
   }
 }

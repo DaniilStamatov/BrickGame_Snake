@@ -73,6 +73,11 @@
         "typeinfo": "cpp",
         "valarray": "cpp",
         "variant": "cpp",
-        "tetris.h": "c"
+        "tetris.h": "c",
+        "stdlib.h": "c",
+        "common.h": "c",
+        "qmainwindow": "cpp",
+        "qgridlayout": "cpp",
+        "qkeyevent": "cpp"
     }
 }

@@ -6,16 +6,16 @@ CHECK_LIBS = -lcheck -lm
 TETRIS_LIB = ./tetris.a
 OBJ_DIR = ./build
 GAME = ./game.c
-SNAKE_GAME = ./snake_main.cpp
+SNAKE_GAME = ./cli_main.c
 TEST_DIR = ./tests
 FRONTEND = ./gui/cli/renderer.c
 TEST_SRC =$(wildcard $(TEST_DIR)/test_*.c) ./tests/tests.c
 
 TETRIS_SOURCES = $(wildcard ./brick_game/tetris/*.c)
 OBJS = $(patsubst ./brick_game/tetris/%.c, $(OBJ_DIR)/brick_game/tetris/%.o, $(TETRIS_SOURCES))
+SNAKE_DIRS = brick_game/snake/controller brick_game/snake/model
 
 SNAKE_SOURCES = $(wildcard $(addsuffix /*.cpp, $(SNAKE_DIRS)))
-SNAKE_DIRS = brick_game/snake/controller brick_game/snake/model
 SNAKE_OBJS = $(patsubst ./brick_game/snake/%.cpp, $(OBJ_DIR)/snake/%.o, $(SNAKE_SOURCES))
 
 DIST_DIR=archive
@@ -28,7 +28,7 @@ install: tetris
 uninstall: 
 	rm $(OBJ_DIR)/tetris
 
-tetris: $(GAME) $(FRONTEND) $(TETRIS_LIB)
+tetris: $(SNAKE_GAME) $(FRONTEND) $(TETRIS_LIB)
 	$(CFLAGS) -o $(OBJ_DIR)/$@ $^ $(LDFLAGS)  -DTETRIS
 
 snake: snake.a

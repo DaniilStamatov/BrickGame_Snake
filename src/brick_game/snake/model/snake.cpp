@@ -1,7 +1,7 @@
 #include "snake.h"
 
 Snake::Snake() : m_direction(Direction::Left), m_length(1) {
-  m_parts[0] = SnakePart(WIDTH / 2 + 1,  HEIGHT / 2 + 1);
+  m_parts[0] = Position(WIDTH / 2 + 1,  HEIGHT / 2 + 1);
 }
 
 void Snake::AddPart() noexcept { ++m_length; }
@@ -20,8 +20,8 @@ void Snake::Move() noexcept {
 }
 
 bool Snake::IsColliding() const {
-  if (GetHead().x < 0 || GetHead().x >= WIDTH || GetHead().y < 0 ||
-      GetHead().y >= HEIGHT) {
+  if (GetHead().x < 0 || GetHead().x > WIDTH -1 || GetHead().y < 0 ||
+      GetHead().y > HEIGHT - 1) {
     return true;
   }
 
@@ -36,10 +36,16 @@ bool Snake::IsColliding() const {
 
 void Snake::SetDirection(Direction new_dir) noexcept { m_direction = new_dir; }
 
-std::array<Snake::SnakePart, SCALE> Snake::GetSnakeBody() const {
+std::array<Position, SCALE> Snake::GetSnakeBody() const {
   return m_parts;
 }
 
 int Snake::GetLength() const { return m_length; }
 
-Snake::SnakePart Snake::GetHead() const { return *m_parts.begin(); }
+Position Snake::GetHead() const { return *m_parts.begin(); }
+
+void Snake::ClearSnake()
+{
+  m_length = 1;
+  m_parts[0] = Position(WIDTH / 2 - 1,  HEIGHT / 2 - 1);
+}

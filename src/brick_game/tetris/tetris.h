@@ -1,12 +1,8 @@
-#ifndef TETRIS_H
-#define TETRIS_H
-
-#define WIDTH 10
-#define HEIGHT 20
+#pragma once
 #define MAX_LEVEL 10
 #define GAME_SPEED 2000
 #include <math.h>
-#include <ncurses.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -100,8 +96,9 @@ typedef enum state {
   SPAWN,      ///< The state when a new tetromino is spawned.
   MOVING,     ///< The state when the tetromino is moving.
   SHIFTING,   ///< The state when the tetromino is shifting.
-  GAME_OVER,  ///< The state when the game is over.
-  PAUSE       ///< The state when the game is paused.
+  GAME_LOST,  ///< The state when the game is over.
+  GAME_PAUSED,       ///< The state when the game is paused.
+
 } state;
 
 /**
@@ -421,5 +418,3 @@ void init_block_Z(TetrominoMap *tetris);
  * @param states The rotation states of the tetromino.
  */
 void fill_block_matrix(TetrominoMap *tetris, position states[4][4]);
-
-#endif

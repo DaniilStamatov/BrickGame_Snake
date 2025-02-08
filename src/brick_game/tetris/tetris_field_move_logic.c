@@ -113,7 +113,7 @@ void create_new_falling(Game *game) {
   init_new_block(game->blocks, rand() % 7, game);
   fill_next_func(&game->game_info, game->next);
   game->time = clock();
-  game->state = check_block_fits(game, game->current) ? MOVING : GAME_OVER;
+  game->state = check_block_fits(game, game->current) ? MOVING : GAME_LOST;
 }
 
 void fill_next_func(GameInfo_t *game_info, Tetromino *next) {

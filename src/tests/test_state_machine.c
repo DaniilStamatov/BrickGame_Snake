@@ -67,7 +67,7 @@ START_TEST(test_machine) {
   ck_assert_int_eq(game->current->location.x, 3);
   process_input('p');
   updateCurrentState();
-  ck_assert_int_eq(game->state, PAUSE);
+  ck_assert_int_eq(game->state, GAME_PAUSED);
   process_input('p');
   updateCurrentState();
   ck_assert_int_eq(game->state, MOVING);
@@ -98,7 +98,7 @@ START_TEST(test_machine_1) {
   ck_assert_int_eq(game->current->location.x, 3);
   process_input('p');
   updateCurrentState();
-  ck_assert_int_eq(game->state, PAUSE);
+  ck_assert_int_eq(game->state, GAME_PAUSED);
   process_input('q');
   updateCurrentState();
   ck_assert_int_eq(game->action, Terminate);
