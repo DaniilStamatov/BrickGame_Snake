@@ -1,5 +1,0 @@
-/home/daniil/Documents/C7_BrickGame_v1.0-1/src/build/CMakeFiles/MyExecutable.dir
-/home/daniil/Documents/C7_BrickGame_v1.0-1/src/build/CMakeFiles/edit_cache.dir
-/home/daniil/Documents/C7_BrickGame_v1.0-1/src/build/CMakeFiles/rebuild_cache.dir
-/home/daniil/Documents/C7_BrickGame_v1.0-1/src/build/CMakeFiles/MyExecutable_autogen_timestamp_deps.dir
-/home/daniil/Documents/C7_BrickGame_v1.0-1/src/build/CMakeFiles/MyExecutable_autogen.dir
