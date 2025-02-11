@@ -73,6 +73,13 @@
         "typeinfo": "cpp",
         "valarray": "cpp",
         "variant": "cpp",
-        "tetris.h": "c"
-    }
+        "tetris.h": "c",
+        "stdlib.h": "c",
+        "common.h": "c",
+        "qmainwindow": "cpp",
+        "qgridlayout": "cpp",
+        "qkeyevent": "cpp",
+        "time.h": "c"
+    },
+    "cmake.sourceDirectory": "/home/daniil/Documents/C7_BrickGame_v1.0-1/src/SnakeCmakeFile"
 }
