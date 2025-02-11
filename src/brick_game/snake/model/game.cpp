@@ -201,3 +201,7 @@ GameInfo_t Game::GetCurrentGameInfo() const
 {
     return m_gameInfo;
 }
+
+Position Game::GetSnakeHeadPosition() const {
+  return m_snake.GetHead();
+}

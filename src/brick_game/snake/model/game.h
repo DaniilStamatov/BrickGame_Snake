@@ -24,6 +24,7 @@ public:
     void ProcessRestart();
     void HandleInput(UserAction_t action);
     GameInfo_t GetCurrentGameInfo() const;
+    Position GetSnakeHeadPosition() const;
 private:
     enum class State {
         MOVING, 

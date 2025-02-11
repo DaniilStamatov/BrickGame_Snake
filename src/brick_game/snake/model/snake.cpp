@@ -1,7 +1,7 @@
 #include "snake.h"
 
 Snake::Snake() : m_direction(Direction::Left), m_length(1) {
-  m_parts[0] = Position(WIDTH / 2 + 1,  HEIGHT / 2 + 1);
+  m_parts[0] = Position(WIDTH / 2 - 1,  HEIGHT / 2 - 1);
 }
 
 void Snake::AddPart() noexcept { ++m_length; }

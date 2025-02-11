@@ -10,7 +10,7 @@ SNAKE_GAME = ./cli_main.c
 TEST_DIR = ./tests
 FRONTEND = ./gui/cli/renderer.c
 TEST_SRC =$(wildcard $(TEST_DIR)/tetris_tests/test_*.c) ./tests/tetris_tests/tests.c
-
+SNAKE_TEST_SRC = $(wildcard $(TEST_DIR)/snake_tests/test_*.cpp)
 TETRIS_SOURCES = $(wildcard ./brick_game/tetris/*.c ./brick_game/tetris/*.cpp)
 OBJS = $(patsubst ./brick_game/tetris/%.c, $(OBJ_DIR)/brick_game/tetris/%.o, $(TETRIS_SOURCES))
 SNAKE_DIRS = brick_game/snake/controller brick_game/snake/model
@@ -68,6 +68,9 @@ dist: clean_dist
 test: clean $(TETRIS_LIB)
 	$(CFLAGS) $(GCOV_FLAGS) $(TETRIS_SOURCES) $(TEST_SRC) -o $(OBJ_DIR)/unit_test $(CHECK_LIBS)
 	$(OBJ_DIR)/unit_test
+	$(CPPFLAGS) $(GCOV_FLAGS) $(SNAKE_SOURCES) $(SNAKE_TEST_SRC) -o $(OBJ_DIR)/snake_unit_test -lgtest -lpthread -lm
+	$(OBJ_DIR)/snake_unit_test
+
 
 valgrind_tests: $(TEST_EXECUTABLES)
 	@echo "Running tests with Valgrind..."
