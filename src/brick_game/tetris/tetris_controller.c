@@ -1,5 +1,5 @@
-#include "tetris.h"
 #include "../common.h"
+#include "tetris.h"
 
 Game *get_current_game_info() {
   static Game game_info_ex = {0};

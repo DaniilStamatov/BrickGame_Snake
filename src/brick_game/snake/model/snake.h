@@ -1,14 +1,15 @@
 #pragma once
-#include "../../common.h"
 #include <array>
 #include <vector>
+
+#include "../../common.h"
 struct Position {
-    int x, y;
-    Position() : x(0), y(0) {}
-    Position(int x, int y) : x(x), y(y) {}
+  int x, y;
+  Position() : x(0), y(0) {}
+  Position(int x, int y) : x(x), y(y) {}
 };
 class Snake {
-public:
+ public:
   enum class Direction { Down = 0, Left = 1, Up = 2, Right = 3 };
   Snake();
   void AddPart() noexcept;
@@ -20,7 +21,7 @@ public:
   Position GetHead() const;
   void ClearSnake();
 
-private:
+ private:
   std::array<Position, SCALE> m_parts;
   Direction m_direction;
   int m_length;

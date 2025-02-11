@@ -1,0 +1,5 @@
+/home/daniil/Documents/C7_BrickGame_v1.0-1/src/tetris_game/CMakeFiles/Tetris.exe.dir
+/home/daniil/Documents/C7_BrickGame_v1.0-1/src/tetris_game/CMakeFiles/edit_cache.dir
+/home/daniil/Documents/C7_BrickGame_v1.0-1/src/tetris_game/CMakeFiles/rebuild_cache.dir
+/home/daniil/Documents/C7_BrickGame_v1.0-1/src/tetris_game/CMakeFiles/Tetris.exe_autogen_timestamp_deps.dir
+/home/daniil/Documents/C7_BrickGame_v1.0-1/src/tetris_game/CMakeFiles/Tetris.exe_autogen.dir

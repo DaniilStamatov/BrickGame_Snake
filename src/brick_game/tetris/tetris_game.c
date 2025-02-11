@@ -77,7 +77,8 @@ int check_block_fits(const Game *game, Tetromino *block) {
   return result;
 }
 
-void fill_block_matrix(TetrominoMap *tetris, position states[BLOCK_SIZE][BLOCK_SIZE]) {
+void fill_block_matrix(TetrominoMap *tetris,
+                       position states[BLOCK_SIZE][BLOCK_SIZE]) {
   for (int i = 0; i < BLOCK_SIZE; i++) {
     for (int j = 0; j < BLOCK_SIZE; j++) {
       tetris->states[i][j] = states[i][j];
@@ -111,7 +112,8 @@ void create_new_falling(Game *game) {
   game->current->location = (position){3, 0};
   init_new_block(game->blocks, rand() % 7, game);
   fill_next_func(&game->game_info, game->next);
-  game->current_state = check_block_fits(game, game->current) ? MOVING : GAME_LOST;
+  game->current_state =
+      check_block_fits(game, game->current) ? MOVING : GAME_LOST;
 }
 
 void fill_next_func(GameInfo_t *game_info, Tetromino *next) {
@@ -209,5 +211,6 @@ void check_lines_full(Game *game) {
   if (game->game_info.level < 10)
     game->game_info.level = game->game_info.score / 600 + 1;
   game->game_info.speed = GAME_SPEED * pow(0.8, game->game_info.level);
-  if(game->game_info.high_score < game->game_info.score) game->game_info.high_score = game->game_info.score;
+  if (game->game_info.high_score < game->game_info.score)
+    game->game_info.high_score = game->game_info.score;
 }

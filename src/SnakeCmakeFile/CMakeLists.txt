@@ -23,7 +23,7 @@ set(PROJECT_SOURCES
 )
 add_definitions(-DSNAKE)
 # Создание исполняемого файла
-add_executable(MyExecutable ${PROJECT_SOURCES})
+add_executable(Snake.exe ${PROJECT_SOURCES})
 
 # Связывание с библиотеками Qt
-target_link_libraries(MyExecutable Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(Snake.exe Qt${QT_VERSION_MAJOR}::Widgets)

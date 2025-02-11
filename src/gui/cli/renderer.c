@@ -2,7 +2,7 @@
 
 void renderer_main(GameInfo_t game_info) {
   clear();
-   if (game_info.pause == PLAYING) {
+  if (game_info.pause == PLAYING) {
     print_border();
   }
   if (game_info.field == NULL) {
@@ -11,8 +11,7 @@ void renderer_main(GameInfo_t game_info) {
     print_field(game_info);
     display_score(game_info);
   }
-  
- 
+
   if (game_info.pause == PAUSE) {
     print_pause_menu();
   }
@@ -86,7 +85,7 @@ void display_score(GameInfo_t game) {
   mvprintw(4, shift_x, "%d", game.score);
   mvprintw(6, shift_x, "LEVEL:");
   mvprintw(7, shift_x, "%d", game.level);
-  if(game.next) {
+  if (game.next) {
     mvaddstr(9, shift_x, "NEXT:");
     for (int i = 0; i < FIGURE_HEIGHT; ++i) {
       for (int j = 0; j < FIGURE_HEIGHT; ++j) {

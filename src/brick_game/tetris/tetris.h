@@ -1,12 +1,13 @@
 #pragma once
 
 #define MAX_LEVEL 10
-#define GAME_SPEED 2000
+#define GAME_SPEED 800
 #include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+
 #include "../common.h"
 
 #define BLOCK_SIZE 4
@@ -98,12 +99,12 @@ extern "C" {
  * @brief Represents the different states of the game.
  */
 typedef enum {
-  START,      ///< The initial state of the game.
-  SPAWN,      ///< The state when a new tetromino is spawned.
-  MOVING,     ///< The state when the tetromino is moving.
-  SHIFTING,   ///< The state when the tetromino is shifting.
-  GAME_LOST,  ///< The state when the game is over.
-  GAME_PAUSED       ///< The state when the game is paused.
+  START,       ///< The initial state of the game.
+  SPAWN,       ///< The state when a new tetromino is spawned.
+  MOVING,      ///< The state when the tetromino is moving.
+  SHIFTING,    ///< The state when the tetromino is shifting.
+  GAME_LOST,   ///< The state when the game is over.
+  GAME_PAUSED  ///< The state when the game is paused.
 } state;
 
 /**
@@ -119,7 +120,6 @@ typedef struct position {
  * @enum UserAction_t
  * @brief Represents user actions in the game.
  */
-
 
 /**
  * @enum TetrisType
@@ -149,8 +149,8 @@ typedef struct {
  * @brief Represents a tetromino piece in the game.
  */
 typedef struct {
-  TetrisType type;  ///< The type of the tetromino.
-  int orientation;  ///< The current orientation of the tetromino (0-3 for 0°,
+  TetrisType type;    ///< The type of the tetromino.
+  int orientation;    ///< The current orientation of the tetromino (0-3 for 0°,
   position location;  ///< The current location
   position state[4];  ///< The positions of the tetromino's blocks in its
 } Tetromino;
@@ -168,13 +168,12 @@ typedef struct {
   int new_input;  ///< Flag indicating whether new user input has been received
   Tetromino *next;       ///< Pointer to the next tetromino to be spawned.
   Tetromino *current;    ///< Pointer to the currently active tetromino.
-  state current_state;           ///< The current state of the game.
-  float time;        ///< The elapsed time since the game started.
+  state current_state;   ///< The current state of the game.
+  float time;            ///< The elapsed time since the game started.
   GameInfo_t game_info;  ///< The game information structure containing various
   UserAction_t action;   ///< The current user action being processed.
   TetrominoMap *blocks;  ///< Pointer to the tetromino map
 } Game;
-
 
 /// @file
 /// @brief Implementation of functions from brickgame.h
@@ -190,7 +189,6 @@ void init_game(Game *game);
  * @param action The user action to be processed.
  * @param hold Indicates whether the action is a hold action.
  */
-
 
 /**
  * @brief Processes user input from the keyboard, translating key presses into

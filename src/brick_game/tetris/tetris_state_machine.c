@@ -17,8 +17,7 @@ void move_figure(Game *game, float dt) {
       process_rotation(game);
   }
   game->time += dt;
-  if(game->time > game->game_info.speed && 
-      game->game_info.pause != 1) {
+  if (game->time > game->game_info.speed && game->game_info.pause != 1) {
     game->current_state = SHIFTING;
     game->time = 0;
   }
@@ -80,7 +79,7 @@ void free_matrix(int **matrix, int rows) {
 }
 
 void finish_game(Game *game) {
-  if (game->game_info.score > game->game_info.high_score) {
+  if (game->game_info.score >= game->game_info.high_score) {
     FILE *file = fopen("high_score.txt", "w");
     if (file) {
       fprintf(file, "%d", game->game_info.score);

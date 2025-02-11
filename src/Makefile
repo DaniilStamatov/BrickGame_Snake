@@ -20,13 +20,16 @@ SNAKE_OBJS = $(patsubst ./brick_game/snake/%.cpp, $(OBJ_DIR)/snake/%.o, $(SNAKE_
 
 DIST_DIR=archive
 
-all: $(TETRIS_LIB) install 
-	$(OBJ_DIR)/tetris
+all: install 
 
-install: tetris
+install: tetris snake
+	rm -rf snake_game && mkdir snake_game && cd snake_game && cmake ../SnakeCmakeFile && make && cp Snake.exe ../build && rm -rf snake_game
+	rm -rf tetris_game && mkdir tetris_game && cd tetris_game && cmake ../TetrisCmakeFile && make && cp Tetris.exe ../build && rm -rf tetris_game
 
 uninstall: 
-	rm $(OBJ_DIR)/tetris
+	rm -rf ./build
+
+
 
 tetris: $(SNAKE_GAME) $(FRONTEND) $(TETRIS_LIB)
 	$(CFLAGS) -o $(OBJ_DIR)/$@ $^ $(LDFLAGS)  -DTETRIS
@@ -81,23 +84,20 @@ dvi: clean
 	doxygen doc/Doxyfile
 	xdg-open html/html/index.html
 	
+clang-format:
+	cp ../materials/linters/.clang-format .
+	find . -type f \( -name '*.cpp' -o -name '*.h' -o -name '*.c' \) -exec clang-format -i {} \; -exec clang-format -n {} \;
+
+
 gcov_report: test
 	@echo "Generating coverage report..."
-	lcov --capture --directory . --output-file coverage.info
+	lcov --capture --directory . --output-file coverage.info --exclude '/usr/include/*' --ignore-errors inconsistent
 	genhtml coverage.info --output-directory ./coverage_report
 	@xdg-open ./coverage_report/index.html || echo "Could not open report"
 
-clang_format:
-	cp ../materials/linters/.clang-format .clang-format
-	clang-format -i *.c
-	clang-format -i brick_game/tetris/*.c brick_game/tetris/*.h
-	clang-format -i gui/cli/*.c gui/cli/*.h
-	clang-format -i tests/*.c tests/*.h
-	rm -f .clang-format
-
 clean:
 	rm -rf $(OBJ_DIR) $(TETRIS_LIB) tetris coverage.info unit_test
-	rm -f ./*.gcno ./*.gcda 
+	rm -f ./*.gcno ./*.gcda  snake.a tetris.a high_score.txt snake_high_score.txt
 	rm -rf $(OBJ_DIR) coverage_report
 	rm -rf html
 

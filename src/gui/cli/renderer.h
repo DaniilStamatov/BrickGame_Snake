@@ -4,6 +4,7 @@
 #include "../../brick_game/tetris/tetris.h"
 #elif defined(SNAKE)
 #include <ctime>
+
 #include "../../brick_game/snake/controller/controller.h"
 #endif
 #define ADD_BLOCK(y, x, c)            \

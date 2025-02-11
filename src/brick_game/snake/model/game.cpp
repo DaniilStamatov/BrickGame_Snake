@@ -4,9 +4,8 @@ Game::Game() {
   m_gameInfo.field = nullptr;
 }
 
-void Game::InitGame()
-{
-  if(!m_gameInfo.field){
+void Game::InitGame() {
+  if (!m_gameInfo.field) {
     m_gameInfo.field = new int *[HEIGHT];
     for (int i = 0; i < HEIGHT; ++i) {
       m_gameInfo.field[i] = new int[WIDTH];
@@ -18,7 +17,7 @@ void Game::InitGame()
   m_gameInfo.level = 1;
   m_gameInfo.speed = s_speedFactor * pow(0.8, m_gameInfo.level);
   m_gameInfo.pause = PauseState::PLAYING;
-  FILE *file = fopen("high_score.txt", "r");
+  FILE *file = fopen("snake_high_score.txt", "r");
   if (file) {
     fscanf(file, "%d", &m_gameInfo.high_score);
     fclose(file);
@@ -31,86 +30,87 @@ void Game::InitGame()
 Game::~Game() {
   if (m_gameInfo.field) {
     for (int i = 0; i < HEIGHT; ++i) {
-        delete[] m_gameInfo.field[i];
+      delete[] m_gameInfo.field[i];
     }
     delete[] m_gameInfo.field;
     m_gameInfo.field = nullptr;
   }
- 
 }
 
 void Game::ProcessStateMachine(float dt) {
-  if(m_state != State::START && m_gameInfo.pause != TERMINATE) {
-    if(m_state == State::MOVING) {
-      MoveSnake(dt);  
-    } else if(m_state == State::SPAWNING) {
+  if (m_state != State::START && m_gameInfo.pause != TERMINATE) {
+    if (m_state == State::MOVING) {
+      MoveSnake(dt);
+    } else if (m_state == State::SPAWNING) {
       SpawnFruit();
-    } else if(m_state == State::EATING) {
+    } else if (m_state == State::EATING) {
       m_snake.AddPart();
       m_gameInfo.score++;
-      if(m_gameInfo.high_score < m_gameInfo.score) {
+      if (m_gameInfo.high_score < m_gameInfo.score) {
         m_gameInfo.high_score = m_gameInfo.score;
       }
-      m_gameInfo.level = m_gameInfo.score / 5 + 1;
+      if (m_gameInfo.level < 10) {
+        m_gameInfo.level = m_gameInfo.score / 5 + 1;
+      } else {
+        m_gameInfo.level = 10;
+      }
       m_gameInfo.speed = s_speedFactor * pow(0.8, m_gameInfo.level);
       m_state = State::SPAWNING;
     }
-    if(m_state != State::GAME_LOST) {
+    if (m_state != State::GAME_LOST) {
       ClearField();
       UpdateSnakePosition();
       UpdateFruitPosition();
     }
-    if(m_state == State::GAME_LOST) {
+    if (m_state == State::GAME_LOST) {
       m_gameInfo.pause = PauseState::GAME_OVER;
-       FILE *file = fopen("high_score.txt", "w");
-        if (file) {
-          fprintf(file, "%d", m_gameInfo.score);
-          fclose(file);
-        }
+      FILE *file = fopen("snake_high_score.txt", "w");
+      if (file) {
+        fprintf(file, "%d", m_gameInfo.score);
+        fclose(file);
+      }
     }
   }
-
 }
 
 void Game::HandleInput(UserAction_t action) {
-    switch (action)
-    {
+  switch (action) {
     case UserAction_t::Up:
-        SetSnakeDireciton(Snake::Direction::Up);
-        break;
+      SetSnakeDireciton(Snake::Direction::Up);
+      break;
     case UserAction_t::Down:
-        SetSnakeDireciton(Snake::Direction::Down);
-        break;
+      SetSnakeDireciton(Snake::Direction::Down);
+      break;
     case UserAction_t::Left:
-        SetSnakeDireciton(Snake::Direction::Left);
-        break;
+      SetSnakeDireciton(Snake::Direction::Left);
+      break;
     case UserAction_t::Right:
-        SetSnakeDireciton(Snake::Direction::Right);
-        break;
+      SetSnakeDireciton(Snake::Direction::Right);
+      break;
     case UserAction_t::Pause:
-        TogglePause();
-        break;
+      TogglePause();
+      break;
     case UserAction_t::Start:
-        ProcessRestart();
-        break;
+      ProcessRestart();
+      break;
     case UserAction_t::Terminate:
-        QuitGame();
-        break;
+      QuitGame();
+      break;
     case UserAction_t::Action:
-        break;
+      break;
     default:
-        break;
-    }
+      break;
+  }
 }
 
 void Game::MoveSnake(float dt) {
   m_updateTime += dt;
-  if(m_updateTime >= m_gameInfo.speed) {
+  if (m_updateTime >= m_gameInfo.speed) {
     m_snake.Move();
     m_updateTime = 0;
   }
-  if(m_snake.IsColliding()) m_state = State::GAME_LOST;
-  if(IsCollidingFruit()) {
+  if (m_snake.IsColliding()) m_state = State::GAME_LOST;
+  if (IsCollidingFruit()) {
     m_state = State::EATING;
   }
 }
@@ -162,46 +162,37 @@ bool Game::IsCollidingFruit() const {
          m_snake.GetHead().y == m_fruitLocation.y;
 }
 
-void Game::SetSnakeDireciton(Snake::Direction new_dir)
-{
+void Game::SetSnakeDireciton(Snake::Direction new_dir) {
   m_snake.SetDirection(new_dir);
 }
 
-void Game::TogglePause()
-{
-  if(m_state!=State::START && m_state != State::GAME_LOST) {
-    if(m_gameInfo.pause == PAUSE) {
-    m_gameInfo.pause = PLAYING;
-    m_state = State::MOVING;
-  } else {
-    m_gameInfo.pause = PAUSE;
-    m_state = State::PAUSED;
-  }
+void Game::TogglePause() {
+  if (m_state != State::START && m_state != State::GAME_LOST) {
+    if (m_gameInfo.pause == PAUSE) {
+      m_gameInfo.pause = PLAYING;
+      m_state = State::MOVING;
+    } else {
+      m_gameInfo.pause = PAUSE;
+      m_state = State::PAUSED;
+    }
   }
 }
 
-void Game::QuitGame()
-{
+void Game::QuitGame() {
   m_gameInfo.pause = PauseState::TERMINATE;
-  FILE *file = fopen("high_score.txt", "w");
+  FILE *file = fopen("snake_high_score.txt", "w");
   if (file) {
     fprintf(file, "%d", m_gameInfo.score);
     fclose(file);
   }
 }
 
-void Game::ProcessRestart()
-{
-  if(m_state == State::GAME_LOST || m_state == State::START) {
+void Game::ProcessRestart() {
+  if (m_state == State::GAME_LOST || m_state == State::START) {
     InitGame();
   }
 }
 
-GameInfo_t Game::GetCurrentGameInfo() const
-{
-    return m_gameInfo;
-}
+GameInfo_t Game::GetCurrentGameInfo() const { return m_gameInfo; }
 
-Position Game::GetSnakeHeadPosition() const {
-  return m_snake.GetHead();
-}
+Position Game::GetSnakeHeadPosition() const { return m_snake.GetHead(); }
