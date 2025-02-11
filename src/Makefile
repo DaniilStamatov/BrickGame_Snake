@@ -23,8 +23,8 @@ DIST_DIR=archive
 all: install 
 
 install: tetris snake
-	rm -rf snake_game && mkdir snake_game && cd snake_game && cmake ../SnakeCmakeFile && make && cp Snake.exe ../build && rm -rf snake_game
-	rm -rf tetris_game && mkdir tetris_game && cd tetris_game && cmake ../TetrisCmakeFile && make && cp Tetris.exe ../build && rm -rf tetris_game
+	rm -rf snake_game && mkdir snake_game && cd snake_game && cmake ../SnakeCmakeFile && make && cp Snake.exe ../build 
+	rm -rf tetris_game && mkdir tetris_game && cd tetris_game && cmake ../TetrisCmakeFile && make && cp Tetris.exe ../build 
 
 uninstall: 
 	rm -rf ./build
@@ -100,6 +100,8 @@ clean:
 	rm -f ./*.gcno ./*.gcda  snake.a tetris.a high_score.txt snake_high_score.txt
 	rm -rf $(OBJ_DIR) coverage_report
 	rm -rf html
+	rm -rf snake_game
+	rm -rf tetris_game
 
 clean_dist:
 	@cd ../ && rm -rf archive

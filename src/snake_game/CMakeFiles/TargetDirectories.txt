@@ -1,5 +1,0 @@
-/home/daniil/Documents/C7_BrickGame_v1.0-1/src/snake_game/CMakeFiles/Snake.exe.dir
-/home/daniil/Documents/C7_BrickGame_v1.0-1/src/snake_game/CMakeFiles/edit_cache.dir
-/home/daniil/Documents/C7_BrickGame_v1.0-1/src/snake_game/CMakeFiles/rebuild_cache.dir
-/home/daniil/Documents/C7_BrickGame_v1.0-1/src/snake_game/CMakeFiles/Snake.exe_autogen_timestamp_deps.dir
-/home/daniil/Documents/C7_BrickGame_v1.0-1/src/snake_game/CMakeFiles/Snake.exe_autogen.dir
