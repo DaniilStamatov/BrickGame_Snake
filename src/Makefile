@@ -9,9 +9,9 @@ GAME = ./game.c
 SNAKE_GAME = ./cli_main.c
 TEST_DIR = ./tests
 FRONTEND = ./gui/cli/renderer.c
-TEST_SRC =$(wildcard $(TEST_DIR)/test_*.c) ./tests/tests.c
+TEST_SRC =$(wildcard $(TEST_DIR)/tetris_tests/test_*.c) ./tests/tetris_tests/tests.c
 
-TETRIS_SOURCES = $(wildcard ./brick_game/tetris/*.c)
+TETRIS_SOURCES = $(wildcard ./brick_game/tetris/*.c ./brick_game/tetris/*.cpp)
 OBJS = $(patsubst ./brick_game/tetris/%.c, $(OBJ_DIR)/brick_game/tetris/%.o, $(TETRIS_SOURCES))
 SNAKE_DIRS = brick_game/snake/controller brick_game/snake/model
 
@@ -66,7 +66,7 @@ dist: clean_dist
 	cd ../ && rm -rf $(DIST_DIR)
 
 test: clean $(TETRIS_LIB)
-	$(CC) $(CFLAGS) $(GCOV_FLAGS) $(TETRIS_SOURCES) $(TEST_SRC) -o $(OBJ_DIR)/unit_test $(CHECK_LIBS)
+	$(CFLAGS) $(GCOV_FLAGS) $(TETRIS_SOURCES) $(TEST_SRC) -o $(OBJ_DIR)/unit_test $(CHECK_LIBS)
 	$(OBJ_DIR)/unit_test
 
 valgrind_tests: $(TEST_EXECUTABLES)

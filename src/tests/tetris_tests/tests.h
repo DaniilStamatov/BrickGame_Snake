@@ -4,8 +4,9 @@
 #include <check.h>
 #include <time.h>
 #include <unistd.h>
+#include <ncurses.h>
 
-#include "../brick_game/tetris/tetris.h"
+#include "../../brick_game/tetris/tetris.h"
 Suite *movement_suite(void);
 Suite *machine_suite(void);
 

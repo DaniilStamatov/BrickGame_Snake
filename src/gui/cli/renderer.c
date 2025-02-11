@@ -88,8 +88,8 @@ void display_score(GameInfo_t game) {
   mvprintw(7, shift_x, "%d", game.level);
   if(game.next) {
     mvaddstr(9, shift_x, "NEXT:");
-    for (int i = 0; i < 4; ++i) {
-      for (int j = 0; j < 4; ++j) {
+    for (int i = 0; i < FIGURE_HEIGHT; ++i) {
+      for (int j = 0; j < FIGURE_HEIGHT; ++j) {
         if (game.next[i][j] != 0) {
           ADD_BLOCK(14 + i, 24 + j * 2 + 1, game.next[i][j]);
         }

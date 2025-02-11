@@ -78,6 +78,7 @@
         "common.h": "c",
         "qmainwindow": "cpp",
         "qgridlayout": "cpp",
-        "qkeyevent": "cpp"
+        "qkeyevent": "cpp",
+        "time.h": "c"
     }
 }

@@ -16,6 +16,5 @@ GameInfo_t updateCurrentState(float dt)
 {
     Game& s_game = GetCurrentGameState();
     s_game.ProcessStateMachine(dt);
-
     return s_game.GetCurrentGameInfo();
 }

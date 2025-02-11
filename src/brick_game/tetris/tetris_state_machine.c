@@ -1,11 +1,11 @@
 #include "tetris.h"
-void move_figure(Game *game) {
+void move_figure(Game *game, float dt) {
   if (game->new_input) {
     if (game->action == Terminate) {
       game->game_info.pause = 3;
       finish_game(game);
     } else if (game->action == Pause) {
-      game->state = GAME_PAUSED;
+      game->current_state = GAME_PAUSED;
       game->game_info.pause = 1;
     } else if (game->action == Left)
       move_right_or_left(game, -1);
@@ -16,18 +16,19 @@ void move_figure(Game *game) {
     else if ((game->action == Action || game->action == Up))
       process_rotation(game);
   }
-  if (clock() - game->time > game->game_info.speed &&
+  game->time += dt;
+  if(game->time > game->game_info.speed && 
       game->game_info.pause != 1) {
-    game->state = SHIFTING;
-    game->time = clock();
+    game->current_state = SHIFTING;
+    game->time = 0;
   }
   game->new_input = 0;
 }
 
-void pause_state(Game *game) {
+void set_pause_state(Game *game) {
   if (game->new_input) {
     if (game->action == Pause) {
-      game->state = MOVING;
+      game->current_state = MOVING;
       game->game_info.pause = 0;
     } else if (game->action == Terminate) {
       game->game_info.pause = 3;
@@ -37,8 +38,8 @@ void pause_state(Game *game) {
   game->new_input = 0;
 }
 
-void state_machine(Game *game) {
-  if (game->state == START) {
+void process_state_machine(Game *game, float dt) {
+  if (game->current_state == START) {
     if (game->new_input) {
       if (game->action == Start) {
         game->game_info.pause = 0;
@@ -49,17 +50,17 @@ void state_machine(Game *game) {
     }
     game->new_input = 0;
   }
-  if (game->state == SPAWN) {
+  if (game->current_state == SPAWN) {
     create_new_falling(game);
-  } else if (game->state == SHIFTING) {
+  } else if (game->current_state == SHIFTING) {
     move_block_down(game);
-  } else if (game->state == MOVING) {
-    move_figure(game);
-  } else if (game->state == GAME_LOST) {
+  } else if (game->current_state == MOVING) {
+    move_figure(game, dt);
+  } else if (game->current_state == GAME_LOST) {
     game->game_info.pause = 2;
-    game->state = START;
-  } else if (game->state == GAME_PAUSED) {
-    pause_state(game);
+    game->current_state = START;
+  } else if (game->current_state == GAME_PAUSED) {
+    set_pause_state(game);
   }
 }
 
@@ -90,6 +91,7 @@ void finish_game(Game *game) {
   free_matrix(game->game_info.next, 4);
   game->game_info.field = NULL;
   free(game->next);
+  game->next = NULL;
   free(game->current);
   free(game->blocks);
 }

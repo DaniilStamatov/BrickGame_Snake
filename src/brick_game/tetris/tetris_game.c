@@ -1,10 +1,9 @@
 #include "tetris.h"
 
 void init_game(Game *game) {
-  game->state = SPAWN;
+  game->current_state = SPAWN;
   game->cleared = 0;
   game->blocks = init_all_block_types();
-  game->time = clock();
   game->current = malloc(sizeof(Tetromino));
   game->next = malloc(sizeof(Tetromino));
   init_new_block(game->blocks, rand() % 7, game);
@@ -17,7 +16,7 @@ GameInfo_t init_game_info() {
   game.level = 1;
   game.pause = 0;
   game.speed = GAME_SPEED * pow(0.8, game.level);
-  game.next = create_matrix(4, 4);
+  game.next = create_matrix(BLOCK_SIZE, BLOCK_SIZE);
   game.field = create_matrix(HEIGHT, WIDTH);
   FILE *file = fopen("high_score.txt", "r");
   if (file) {
@@ -29,9 +28,9 @@ GameInfo_t init_game_info() {
 
 void init_new_block(TetrominoMap *blocks, int type, Game *game) {
   game->next->type = type;
-  int rotation = rand() % 4;
+  int rotation = rand() % BLOCK_SIZE;
   game->next->orientation = rotation;
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < BLOCK_SIZE; i++) {
     game->next->state[i] = blocks[type].states[rotation][i];
   }
 }
@@ -40,8 +39,8 @@ Tetromino *rotate_block(const Tetromino *block, TetrominoMap *blocks,
                         int shift) {
   Tetromino *new_block = malloc(sizeof(Tetromino));
   new_block->type = block->type;
-  int new_orientation = (block->orientation + shift) % 4;
-  for (int i = 0; i < 4; i++) {
+  int new_orientation = (block->orientation + shift) % BLOCK_SIZE;
+  for (int i = 0; i < BLOCK_SIZE; i++) {
     new_block->state[i] = blocks[block->type].states[new_orientation][i];
   }
   new_block->orientation = new_orientation;
@@ -54,7 +53,7 @@ void set_cell(Game *game, int row, int col, int value) {
 }
 
 void remove_block(Game *game, Tetromino *block) {
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < BLOCK_SIZE; i++) {
     int row = block->location.y + block->state[i].y;
     int col = block->location.x + block->state[i].x;
 
@@ -68,7 +67,7 @@ int is_in_range(int row, int column) {
 
 int check_block_fits(const Game *game, Tetromino *block) {
   int result = 1;
-  for (int i = 0; i < 4; ++i) {
+  for (int i = 0; i < BLOCK_SIZE; ++i) {
     int column = block->location.x + block->state[i].x;
     int row = block->location.y + block->state[i].y;
     if (!is_in_range(row, column) || game->game_info.field[row][column] != 0) {
@@ -78,16 +77,16 @@ int check_block_fits(const Game *game, Tetromino *block) {
   return result;
 }
 
-void fill_block_matrix(TetrominoMap *tetris, position states[4][4]) {
-  for (int i = 0; i < 4; i++) {
-    for (int j = 0; j < 4; j++) {
+void fill_block_matrix(TetrominoMap *tetris, position states[BLOCK_SIZE][BLOCK_SIZE]) {
+  for (int i = 0; i < BLOCK_SIZE; i++) {
+    for (int j = 0; j < BLOCK_SIZE; j++) {
       tetris->states[i][j] = states[i][j];
     }
   }
 }
 
 void put_block(Game *game, Tetromino *block) {
-  for (int i = 0; i < 4; ++i) {
+  for (int i = 0; i < BLOCK_SIZE; ++i) {
     int x = block->location.x + block->state[i].x;
     int y = block->location.y + block->state[i].y;
     game->game_info.field[y][x] = block->type + 1;
@@ -98,7 +97,7 @@ void fill_current_from_next(Game *game) {
   Tetromino *temp = game->next;
   game->current->orientation = temp->orientation;
   game->current->type = temp->type;
-  for (int i = 0; i < 4; ++i) {
+  for (int i = 0; i < BLOCK_SIZE; ++i) {
     game->current->state[i] = temp->state[i];
   }
 }
@@ -112,20 +111,19 @@ void create_new_falling(Game *game) {
   game->current->location = (position){3, 0};
   init_new_block(game->blocks, rand() % 7, game);
   fill_next_func(&game->game_info, game->next);
-  game->time = clock();
-  game->state = check_block_fits(game, game->current) ? MOVING : GAME_LOST;
+  game->current_state = check_block_fits(game, game->current) ? MOVING : GAME_LOST;
 }
 
 void fill_next_func(GameInfo_t *game_info, Tetromino *next) {
-  for (int i = 0; i < 4; i++) {
-    for (int j = 0; j < 4; j++) {
+  for (int i = 0; i < BLOCK_SIZE; i++) {
+    for (int j = 0; j < BLOCK_SIZE; j++) {
       game_info->next[i][j] = 0;
     }
   }
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < BLOCK_SIZE; i++) {
     int x = next->state[i].x;
     int y = next->state[i].y;
-    if (y >= 0 && y < 4 && x >= 0 && x < 4) {
+    if (y >= 0 && y < BLOCK_SIZE && x >= 0 && x < BLOCK_SIZE) {
       game_info->next[y][x] = next->type + 1;
     }
   }
@@ -135,12 +133,12 @@ void move_block_down(Game *game) {
   remove_block(game, game->current);
   game->current->location.y++;
   if (check_block_fits(game, game->current)) {
-    game->state = MOVING;
+    game->current_state = MOVING;
     put_block(game, game->current);
   } else {
     game->current->location.y--;
     put_block(game, game->current);
-    game->state = SPAWN;
+    game->current_state = SPAWN;
   }
 }
 
@@ -151,7 +149,7 @@ void move_right_or_left(Game *game, int direction) {
     game->current->location.x -= direction;
   }
   put_block(game, game->current);
-  game->state = MOVING;
+  game->current_state = MOVING;
 }
 
 void move_to_bottom(Game *game) {
@@ -161,7 +159,7 @@ void move_to_bottom(Game *game) {
   }
   game->current->location.y--;
   put_block(game, game->current);
-  game->state = SPAWN;
+  game->current_state = SPAWN;
 }
 
 void process_rotation(Game *game) {
@@ -211,4 +209,5 @@ void check_lines_full(Game *game) {
   if (game->game_info.level < 10)
     game->game_info.level = game->game_info.score / 600 + 1;
   game->game_info.speed = GAME_SPEED * pow(0.8, game->game_info.level);
+  if(game->game_info.high_score < game->game_info.score) game->game_info.high_score = game->game_info.score;
 }

@@ -7,6 +7,7 @@
 #include <QTimer>
 #include <QElapsedTimer>
 #include <QWidget>
+#include <QApplication>
 
 #ifdef TETRIS
 #include "../../brick_game/tetris/tetris.h"
@@ -14,7 +15,19 @@
 #include <ctime>
 #include "../../brick_game/snake/controller/controller.h"
 #endif
-class GameWidget;
+#define WIDGET_HEIGHT 32
+#define WINDOW_WIDTH 600
+#define WINDOW_HEIGHT 600
+#define GAME_WIDGET_WIDTH 220
+#define GAME_WIDGET_HEIGHT 420
+#define CELL_SIZE 20
+#define PAUSE_RECT_HEIGHT 32
+#define GAME_OVER_RECT_HEIGHT 70
+#define SCORE_RECT_HEIGHT 32
+#define MESSAGE_RECT_HEIGHT 50
+
+class GameWindow;
+class InfoWindow;
 class MainWindow : public QMainWindow {
     Q_OBJECT
     public:
@@ -22,28 +35,43 @@ class MainWindow : public QMainWindow {
     ~MainWindow() override;
 
     private:
-    GameWidget* m_game_win;
+    GameWindow* m_gameWin;
     QGridLayout* m_layout;
+    InfoWindow* m_infoWindow;
 };
 
-class GameWidget : public QWidget {
+class GameWindow : public QWidget {
     Q_OBJECT
 public:
-    GameWidget(QWidget *parent = nullptr);
-
+    const static int m_cellSize = 20;
+    GameWindow(QWidget *parent = nullptr);
+    GameInfo_t GetGameInfo();
 protected:
     void paintEvent(QPaintEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
 private slots:
-    void updateGame();
-    void renderGame();
+    void UpdateGame();
+    void RenderGame();
+signals:
+    void updateInfoText(GameInfo_t gameInfo);
 private:
     QColor m_colors[8];
 
     GameInfo_t m_gameInfo;
-    int m_cellSize = 20;
     int m_fieldSizeX;
     int m_fieldSizeY;
     QTimer *m_timer;
     QElapsedTimer m_elapsedTimer;
+};
+
+class InfoWindow : public QWidget {
+    Q_OBJECT
+public:
+    InfoWindow(GameInfo_t info);
+    void Update(GameInfo_t gameInfo);
+protected:
+    void paintEvent(QPaintEvent *event) override;
+private:
+    GameInfo_t m_gameInfo;
+    QColor m_colors[8];
 };

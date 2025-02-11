@@ -1,4 +1,5 @@
 #pragma once
+
 #define MAX_LEVEL 10
 #define GAME_SPEED 2000
 #include <math.h>
@@ -7,6 +8,11 @@
 #include <stdlib.h>
 #include <time.h>
 #include "../common.h"
+
+#define BLOCK_SIZE 4
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @file tetris_game.h
@@ -91,14 +97,13 @@
  * @enum state
  * @brief Represents the different states of the game.
  */
-typedef enum state {
+typedef enum {
   START,      ///< The initial state of the game.
   SPAWN,      ///< The state when a new tetromino is spawned.
   MOVING,     ///< The state when the tetromino is moving.
   SHIFTING,   ///< The state when the tetromino is shifting.
   GAME_LOST,  ///< The state when the game is over.
-  GAME_PAUSED,       ///< The state when the game is paused.
-
+  GAME_PAUSED       ///< The state when the game is paused.
 } state;
 
 /**
@@ -163,12 +168,13 @@ typedef struct {
   int new_input;  ///< Flag indicating whether new user input has been received
   Tetromino *next;       ///< Pointer to the next tetromino to be spawned.
   Tetromino *current;    ///< Pointer to the currently active tetromino.
-  state state;           ///< The current state of the game.
-  long long time;        ///< The elapsed time since the game started.
+  state current_state;           ///< The current state of the game.
+  float time;        ///< The elapsed time since the game started.
   GameInfo_t game_info;  ///< The game information structure containing various
   UserAction_t action;   ///< The current user action being processed.
   TetrominoMap *blocks;  ///< Pointer to the tetromino map
 } Game;
+
 
 /// @file
 /// @brief Implementation of functions from brickgame.h
@@ -184,14 +190,7 @@ void init_game(Game *game);
  * @param action The user action to be processed.
  * @param hold Indicates whether the action is a hold action.
  */
-void userInput(UserAction_t action, bool hold);
 
-/**
- * @brief Updates the current game state, including moving the tetromino down
- * automatically based on the game speed.
- * @return The updated game information.
- */
-GameInfo_t updateCurrentState();
 
 /**
  * @brief Processes user input from the keyboard, translating key presses into
@@ -284,14 +283,14 @@ void remove_block(Game *game, Tetromino *block);
  * different game states.
  * @param game Pointer to the current game instance.
  */
-void state_machine(Game *game);
+void process_state_machine(Game *game, float dt);
 
 /**
  * @brief Handles the movement of the current tetromino piece based on user
  * input and game logic.
  * @param game Pointer to the current game instance.
  */
-void move_figure(Game *game);
+void move_figure(Game *game, float dt);
 
 /**
  * @brief Finalizes the game state, performing any necessary cleanup and
@@ -306,15 +305,6 @@ void finish_game(Game *game);
  * @param game Pointer to the current game instance.
  */
 void move_to_bottom(Game *game);
-
-/**
- * @brief Implements a timer function that manages the game speed.
- * @param gs Pointer to the current game instance.
- * @param delay Delay in milliseconds for the timer.
- * @return The elapsed time.
- */
-int timer(Game *gs, int delay);
-
 /**
  * @brief Frees the memory allocated for a 2D matrix of integers.
  * @param matrix Pointer to the matrix to free.
@@ -418,3 +408,7 @@ void init_block_Z(TetrominoMap *tetris);
  * @param states The rotation states of the tetromino.
  */
 void fill_block_matrix(TetrominoMap *tetris, position states[4][4]);
+
+#ifdef __cplusplus
+}
+#endif

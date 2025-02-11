@@ -1,6 +1,7 @@
 #include "game.h"
 Game::Game() {
   m_state = State::START;
+  m_gameInfo.field = nullptr;
 }
 
 void Game::InitGame()
@@ -17,6 +18,11 @@ void Game::InitGame()
   m_gameInfo.level = 1;
   m_gameInfo.speed = s_speedFactor * pow(0.8, m_gameInfo.level);
   m_gameInfo.pause = PauseState::PLAYING;
+  FILE *file = fopen("high_score.txt", "r");
+  if (file) {
+    fscanf(file, "%d", &m_gameInfo.high_score);
+    fclose(file);
+  }
   m_state = State::MOVING;
   m_snake.ClearSnake();
   SpawnFruit();
@@ -30,6 +36,7 @@ Game::~Game() {
     delete[] m_gameInfo.field;
     m_gameInfo.field = nullptr;
   }
+ 
 }
 
 void Game::ProcessStateMachine(float dt) {
@@ -41,6 +48,9 @@ void Game::ProcessStateMachine(float dt) {
     } else if(m_state == State::EATING) {
       m_snake.AddPart();
       m_gameInfo.score++;
+      if(m_gameInfo.high_score < m_gameInfo.score) {
+        m_gameInfo.high_score = m_gameInfo.score;
+      }
       m_gameInfo.level = m_gameInfo.score / 5 + 1;
       m_gameInfo.speed = s_speedFactor * pow(0.8, m_gameInfo.level);
       m_state = State::SPAWNING;
@@ -52,6 +62,11 @@ void Game::ProcessStateMachine(float dt) {
     }
     if(m_state == State::GAME_LOST) {
       m_gameInfo.pause = PauseState::GAME_OVER;
+       FILE *file = fopen("high_score.txt", "w");
+        if (file) {
+          fprintf(file, "%d", m_gameInfo.score);
+          fclose(file);
+        }
     }
   }
 
@@ -154,18 +169,25 @@ void Game::SetSnakeDireciton(Snake::Direction new_dir)
 
 void Game::TogglePause()
 {
-  if(m_gameInfo.pause == PAUSE) {
+  if(m_state!=State::START && m_state != State::GAME_LOST) {
+    if(m_gameInfo.pause == PAUSE) {
     m_gameInfo.pause = PLAYING;
     m_state = State::MOVING;
   } else {
     m_gameInfo.pause = PAUSE;
     m_state = State::PAUSED;
   }
+  }
 }
 
 void Game::QuitGame()
 {
   m_gameInfo.pause = PauseState::TERMINATE;
+  FILE *file = fopen("high_score.txt", "w");
+  if (file) {
+    fprintf(file, "%d", m_gameInfo.score);
+    fclose(file);
+  }
 }
 
 void Game::ProcessRestart()
