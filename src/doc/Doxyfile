@@ -1,84 +1,94 @@
-# Doxyfile for Tetris Game Documentation
+# Doxyfile for BrickGame Documentation (Tetris & Snake)
 
 # Project related configuration
-PROJECT_NAME = "Tetris Game"
-PROJECT_BRIEF = "A classic Tetris game implemented in C"
+PROJECT_NAME = "BrickGame (Tetris & Snake)"
+PROJECT_BRIEF = "Classic Tetris and Snake games implemented in C/C++"
 OUTPUT_DIRECTORY = html
-INPUT = brick_game/tetris/
+INPUT = brick_game/tetris/ brick_game/snake/
 RECURSIVE = YES
-FILE_PATTERNS = *.c *.h
+FILE_PATTERNS = *.c *.h *.cc *.cpp
 GENERATE_HTML = YES
 
 /**
- * @file tetris_game.h
- * @brief Tetris Game Documentation
+ * @file projects_overview.h
+ * @brief BrickGame Documentation: Tetris and Snake
  *
- * This project implements a classic Tetris game using C and the NCurses library.
- * The game allows players to control falling tetrominoes, clearing lines and scoring points.
- * The project includes functionality for game initialization, user input handling, collision detection, and score management.
+ * This documentation covers both the Tetris implementation (C)
+ * and the Snake implementation (C++). It provides high-level
+ * overviews, build and run instructions, controls, and descriptions
+ * of key modules and functions.
  */
 
 /**
- * @mainpage Tetris Game Documentation
+ * @mainpage BrickGame Documentation
  *
  * ## Overview
- * This project implements a classic Tetris game using C and the NCurses library.
- * The game allows players to control falling tetrominoes, clearing lines and scoring points.
- * The project includes functionality for game initialization, user input handling, collision detection, and score management.
+ * This repository contains two small classic games implemented in C/C++:
+ * - Tetris (C + NCurses)
+ * - Snake (C++ - modular design: model/controller/frontend)
+ *
+ * The documentation generated here includes both projects and their
+ * unit tests and should help developers understand the project layout
+ * and public interfaces.
  *
  * ## Table of Contents
- * - [Features](#features)
+ * - [Tetris](#tetris)
+ * - [Snake](#snake)
  * - [Installation](#installation)
  * - [Usage](#usage)
- * - [Game Controls](#game-controls)
- * - [Function Descriptions](#function-descriptions)
  * - [Testing](#testing)
  */
 
 /**
- * @section features Features
- * - Classic Tetris gameplay
- * - Various tetromino shapes
- * - High score tracking
- * - User controls for piece movement and rotation
- * - Line clearing and score management
+ * @section tetris Tetris
+ * The Tetris game is implemented in C and lives under `brick_game/tetris/`.
+ * It uses NCurses for console rendering and includes unit tests under `tests/tetris_tests/`.
+ */
+
+/**
+ * @section snake Snake
+ * The Snake game is implemented in modern C++ and lives under `brick_game/snake/`.
+ * Key components:
+ * - `model/` — game logic, snake model, and state machine
+ * - `controller/` — input and high-level orchestration
+ * - `gui/cli/renderer.c` — shared CLI renderer used by both games
+ *
+ * Controls (CLI): arrow keys to move, P to pause, Q to quit.
  */
 
 /**
  * @section installation Installation
  * 
  * ### Prerequisites
- * - GCC (GNU Compiler Collection)
- * - NCurses library
- * - Check library (for unit testing)
+ * - GCC / G++
+ * - NCurses
  * - Make
+ * - CMake (for desktop builds)
+ * - GoogleTest / Check (for unit tests)
  *
  * ### Steps
- * 1. Install the NCurses, GCC compiler, Make and Check libraries (if not already installed).
- * 2. Compile the game using makefile (src folder):
+ * 1. From `src/` run:
  *    ```
  *    make install
+ *    ```
+ * 2. To build only Snake (console):
+ *    ```
+ *    make snake
  *    ```
  */
 
 /**
  * @section usage Usage
- * Run the game using the following command:
- * ```
- * ./build/tetris
- * ```
+ * Run the console builds from `src/`:
+ * - Tetris console: `./build/tetris_console`
+ * - Snake console:  `./build/snake_console`
  */
 
 /**
- * @section game-controls Game Controls
- * - **Arrow Left:** Move piece left
- * - **Arrow Right:** Move piece right
- * - **Arrow Down:** Drop piece
- * - **Space:** Rotate piece
- * - **P:** Pause/Resume the game
- * - **Q:** Quit the game
- */
-
-/**
- * @section function-descriptions Function Descriptions
+ * @section testing Testing
+ * Unit tests are located in `tests/` for both games. From `src/` run:
+ * ```
+ * make test
+ * ```
+ * This will run test binaries under `build/` produced by the Makefile.
  */

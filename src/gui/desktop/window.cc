@@ -1,49 +1,72 @@
 #include "window.h"
 
+#include <QPushButton>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QMessageBox>
+#include <QProcess>
+#include <QStringList>
+#include <QKeyEvent>
+#include <QCoreApplication>
+
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   setFixedSize(WINDOW_WIDTH, WINDOW_HEIGHT);
   setStyleSheet("background: rgb(48, 50, 54);");
-  QWidget *centralWidget = new QWidget();
-  m_layout = new QGridLayout();
-  m_gameWin = new GameWindow();
-  m_infoWindow = new InfoWindow(m_gameWin->GetGameInfo());
-  connect(m_gameWin, &GameWindow::updateInfoText, m_infoWindow,
-          &InfoWindow::Update);
-  m_layout->addWidget(m_gameWin, 0, 0);
-  m_layout->addWidget(m_infoWindow, 0, 1);
-  centralWidget->setLayout(m_layout);
-  setCentralWidget(centralWidget);
+
+  selector_widget_ = new QWidget();
+  QVBoxLayout *selLayout = new QVBoxLayout(selector_widget_);
+  selLayout->addStretch();
+
+  QPushButton *snakeBtn = new QPushButton("Start");
+  snakeBtn->setFixedHeight(48);
+  snakeBtn->setMinimumWidth(200);
+  QPushButton *quitBtn = new QPushButton("Quit");
+  quitBtn->setFixedHeight(36);
+
+  selLayout->addWidget(snakeBtn, 0, Qt::AlignHCenter);
+  selLayout->addWidget(quitBtn, 0, Qt::AlignHCenter);
+  selLayout->addStretch();
+
+  setCentralWidget(selector_widget_);
+
+  QObject::connect(snakeBtn, &QPushButton::clicked, [this]() {
+    selected_game_ = "snake";
+    ShowGameView(selected_game_, true);
+  });
+
+
+  QObject::connect(quitBtn, &QPushButton::clicked, qApp, &QApplication::quit);
 }
 
-MainWindow::~MainWindow() { delete m_gameWin; }
+MainWindow::~MainWindow() { delete game_window_; }
 
-GameWindow::GameWindow(QWidget *parent) {
+GameWindow::GameWindow() {
   setFixedSize(GAME_WIDGET_WIDTH, GAME_WIDGET_HEIGHT);
-  m_colors[0] = QColor(48, 50, 54);
-  m_colors[1] = QColor(3, 196, 115);
-  m_colors[2] = QColor(0, 0, 255);
-  m_colors[3] = QColor(255, 255, 0);
-  m_colors[4] = QColor(255, 165, 0);
-  m_colors[5] = QColor(128, 0, 128);
-  m_colors[6] = QColor(0, 255, 255);
-  m_colors[7] = QColor(255, 192, 203);
-  m_fieldSizeX = width() / m_cellSize;
-  m_fieldSizeY = height() / m_cellSize;
-  m_gameInfo.field = nullptr;
-  m_gameInfo.next = nullptr;
-  m_gameInfo.score = 0;
-  m_gameInfo.high_score = 0;
-  m_gameInfo.level = 0;
-  m_gameInfo.speed = 0;
-  m_gameInfo.pause = 0;
-  m_timer = new QTimer();
-  connect(m_timer, &QTimer::timeout, this, &GameWindow::UpdateGame);
-  m_timer->start(16);
-  m_elapsedTimer.start();
+  colors_[0] = QColor(48, 50, 54);
+  colors_[1] = QColor(3, 196, 115);
+  colors_[2] = QColor(0, 0, 255);
+  colors_[3] = QColor(255, 255, 0);
+  colors_[4] = QColor(255, 165, 0);
+  colors_[5] = QColor(128, 0, 128);
+  colors_[6] = QColor(0, 255, 255);
+  colors_[7] = QColor(255, 192, 203);
+  field_size_x_ = width() / CELL_SIZE;
+  field_size_y_ = height() / CELL_SIZE;
+  game_info_.field = nullptr;
+  game_info_.next = nullptr;
+  game_info_.score = 0;
+  game_info_.high_score = 0;
+  game_info_.level = 0;
+  game_info_.speed = 0;
+  game_info_.pause = 0;
+  timer_ = new QTimer();
+  connect(timer_, &QTimer::timeout, this, &GameWindow::UpdateGame);
+  timer_->start(16);
+  elapsed_timer_.start();
   setFocusPolicy(Qt::StrongFocus);
 }
 
-GameInfo_t GameWindow::GetGameInfo() { return m_gameInfo; }
+GameInfo_t GameWindow::GetGameInfo() { return game_info_; }
 
 void GameWindow::paintEvent(QPaintEvent *event) {
   Q_UNUSED(event)
@@ -56,7 +79,7 @@ void GameWindow::paintEvent(QPaintEvent *event) {
   painter.drawRoundedRect(0, 0, width(), height(), radius, radius);
   QPen pen_field(QColor(139, 144, 163));
   painter.setPen(pen_field);
-  if (m_gameInfo.field == nullptr) {
+  if (game_info_.field == nullptr) {
     painter.setBrush(menuBrush);
     painter.drawRect(5, height() / 2 - 16, width() - 10, MESSAGE_RECT_HEIGHT);
     painter.setFont(QFont("Roboto", 13, 700));
@@ -66,14 +89,14 @@ void GameWindow::paintEvent(QPaintEvent *event) {
   } else {
     for (int i = 0; i < HEIGHT; ++i) {
       for (int j = 0; j < WIDTH; ++j) {
-        painter.setBrush(m_colors[m_gameInfo.field[i][j]]);
-        painter.drawRect(radius + j * m_cellSize, radius + i * m_cellSize,
-                         m_cellSize, m_cellSize);
+        painter.setBrush(colors_[game_info_.field[i][j]]);
+        painter.drawRect(radius + j * CELL_SIZE, radius + i * CELL_SIZE,
+                         CELL_SIZE, CELL_SIZE);
       }
     }
   }
 
-  if (m_gameInfo.pause == PAUSE) {
+  if (game_info_.pause == PAUSE) {
     painter.setBrush(menuBrush);
     painter.drawRect(5, height() / 2 - 16, width() - 10, GAME_OVER_RECT_HEIGHT);
     painter.setFont(QFont("Roboto", 13, 700));
@@ -82,14 +105,14 @@ void GameWindow::paintEvent(QPaintEvent *event) {
         Qt::AlignCenter, "PAUSED\n Press Enter\n to continue");
   }
 
-  if (m_gameInfo.pause == GAME_OVER) {
+  if (game_info_.pause == GAME_OVER) {
     painter.setBrush(menuBrush);
     painter.drawRect(5, height() / 2 - 16, width() - 10, GAME_OVER_RECT_HEIGHT);
     painter.setFont(QFont("Roboto", 13, 700));
     painter.drawText(
         QRect(5, height() / 2 - 16, width() - 10, GAME_OVER_RECT_HEIGHT),
         Qt::AlignCenter, "GAME OVER\n Press Enter\n to start new game");
-    QString scoreText = QString("Your score: %1").arg(m_gameInfo.score);
+    QString scoreText = QString("Your score: %1").arg(game_info_.score);
     painter.drawRect(5, height() / 2 + 60, width() - 10, 32);
     painter.drawText(
         QRect(5, height() / 2 + 60, width() - 10, SCORE_RECT_HEIGHT),
@@ -128,7 +151,7 @@ void GameWindow::keyPressEvent(QKeyEvent *event) {
 }
 
 void GameWindow::RenderGame() {
-  if (m_gameInfo.pause == TERMINATE) {
+  if (game_info_.pause == TERMINATE) {
     QApplication::quit();
   } else {
     repaint();
@@ -136,29 +159,29 @@ void GameWindow::RenderGame() {
 }
 
 void GameWindow::UpdateGame() {
-  qint64 deltaTime = m_elapsedTimer.restart();
-  m_gameInfo = updateCurrentState(deltaTime);
-  emit updateInfoText(m_gameInfo);
+  qint64 deltaTime = elapsed_timer_.restart();
+  game_info_ = updateCurrentState(deltaTime);
+  emit updateInfoText(game_info_);
   update();
 }
 
-InfoWindow::InfoWindow(GameInfo_t info) : m_gameInfo(info) {
+InfoWindow::InfoWindow(GameInfo_t info) : game_info_(info) {
   setFixedSize(GAME_WIDGET_WIDTH, GAME_WIDGET_HEIGHT);
-  m_colors[0] = QColor(48, 50, 54);
-  m_colors[1] = QColor(3, 196, 115);
-  m_colors[2] = QColor(0, 0, 255);
-  m_colors[3] = QColor(255, 255, 0);
-  m_colors[4] = QColor(255, 165, 0);
-  m_colors[5] = QColor(128, 0, 128);
-  m_colors[6] = QColor(0, 255, 255);
-  m_colors[7] = QColor(255, 192, 203);
+  colors_[0] = QColor(48, 50, 54);
+  colors_[1] = QColor(3, 196, 115);
+  colors_[2] = QColor(0, 0, 255);
+  colors_[3] = QColor(255, 255, 0);
+  colors_[4] = QColor(255, 165, 0);
+  colors_[5] = QColor(128, 0, 128);
+  colors_[6] = QColor(0, 255, 255);
+  colors_[7] = QColor(255, 192, 203);
 }
 
 void InfoWindow::Update(GameInfo_t gameInfo) {
-  if (m_gameInfo.pause == TERMINATE) {
+  if (game_info_.pause == TERMINATE) {
     QApplication::quit();
   } else {
-    m_gameInfo = gameInfo;
+    game_info_ = gameInfo;
     repaint();
   }
 }
@@ -171,16 +194,15 @@ void InfoWindow::paintEvent(QPaintEvent *event) {
   painter.setPen(QColor(250, 250, 250));
   painter.setFont(QFont("Roboto", 12, 700));
   painter.drawText(QRect(10, 10, width() - 10, 20), Qt::AlignLeft,
-                   "HIGH SCORE: " + QString::number(m_gameInfo.high_score));
+                   "HIGH SCORE: " + QString::number(game_info_.high_score));
   painter.drawText(QRect(10, 50, width() - 10, 20), Qt::AlignLeft,
-                   "SCORE: " + QString::number(m_gameInfo.score));
+                   "SCORE: " + QString::number(game_info_.score));
   painter.drawText(QRect(10, 90, width() - 10, 20), Qt::AlignLeft,
-                   "LEVEL: " + QString::number(m_gameInfo.level));
-
-  if (m_gameInfo.next && m_gameInfo.pause != TERMINATE) {
+                   "LEVEL: " + QString::number(game_info_.level));
+  if (game_info_.next && game_info_.pause != TERMINATE) {
     for (int i = 0; i < 4; ++i) {
       for (int j = 0; j < 4; ++j) {
-        painter.setBrush(m_colors[m_gameInfo.next[i][j]]);
+        painter.setBrush(colors_[game_info_.next[i][j]]);
         painter.drawRect(60 + j * CELL_SIZE, 150 + i * CELL_SIZE, CELL_SIZE,
                          CELL_SIZE);
       }
@@ -197,4 +219,37 @@ void InfoWindow::paintEvent(QPaintEvent *event) {
                    "Escape - Exit");
   painter.drawText(QRect(10, 360, width() - 10, 20), Qt::AlignLeft,
                    "Arrow Keys - Move");
+}
+
+void MainWindow::ShowGameView(const QString &which, bool auto_start) {
+  selected_game_ = which;
+  
+  QWidget *newCentral = new QWidget();
+  layout_ = new QGridLayout();
+  game_window_ = new GameWindow();
+  info_window_ = new InfoWindow(game_window_->GetGameInfo());
+  
+  connect(game_window_, &GameWindow::updateInfoText, info_window_,
+          &InfoWindow::Update);
+          
+  layout_->addWidget(game_window_, 0, 0);
+  layout_->addWidget(info_window_, 0, 1);
+  newCentral->setLayout(layout_);
+  
+  QWidget *old = centralWidget();
+  setCentralWidget(newCentral);
+  if (old) {
+    old->deleteLater();
+    selector_widget_ = nullptr;
+  }
+  
+  if (game_window_) {
+    game_window_->setFocus(Qt::ActiveWindowFocusReason);
+    game_window_->grabKeyboard();
+  }
+
+  if (auto_start) {
+    QKeyEvent *ev = new QKeyEvent(QEvent::KeyPress, Qt::Key_Return, Qt::NoModifier);
+    QCoreApplication::postEvent(game_window_, ev);
+  }
 }

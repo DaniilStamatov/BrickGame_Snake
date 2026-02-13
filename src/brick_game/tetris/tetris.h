@@ -149,8 +149,8 @@ typedef struct {
  * @brief Represents a tetromino piece in the game.
  */
 typedef struct {
-  TetrisType type;    ///< The type of the tetromino.
-  int orientation;    ///< The current orientation of the tetromino (0-3 for 0°,
+  TetrisType type;  ///< The type of the tetromino.
+  int orientation;  ///< The current orientation of the tetromino (0-3 for 0°,
   position location;  ///< The current location
   position state[4];  ///< The positions of the tetromino's blocks in its
 } Tetromino;

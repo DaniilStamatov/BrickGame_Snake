@@ -1,17 +1,42 @@
 #pragma once
 
+#include <memory>
 #include <random>
 
 #include "snake.h"
-#define FRUIT_COLOR 2
-#define HEAD_COLOR 4
-#define BODY_COLOR 1
+
+/**
+ * @file game.h
+ * @brief Main game controller for the Snake game.
+ *
+ * The `Game` class implements the high-level state machine for the Snake
+ * game: initialization, the main update loop, input handling, score and
+ * level management, fruit spawning and high-score persistence.
+ */
+
+/**
+ * @class Game
+ * @brief Encapsulates game state and behavior for a single Snake game session.
+ *
+ * Public methods allow starting/restarting the game, processing time steps,
+ * and handling user actions. Internally the class owns a `Snake` instance,
+ * the play field, current score/level and the fruit location.
+ */
+namespace s21 {
 class Game {
  public:
   Game();
-  void InitGame();
   ~Game();
+
+  void InitGame();
   void ProcessStateMachine(float dt);
+  void HandleInput(UserAction_t action);
+  GameInfo_t GetCurrentGameInfo() const;
+  Position GetSnakeHeadPosition() const;
+  int GetSnakeLength() const;
+  void DebugGrowSnake(int times);
+
+ private:
   void SpawnFruit();
   bool IsPositionValid(const Position &pos) const;
   void MoveSnake(float dt);
@@ -23,23 +48,26 @@ class Game {
   void TogglePause();
   void QuitGame();
   void ProcessRestart();
-  void HandleInput(UserAction_t action);
-  GameInfo_t GetCurrentGameInfo() const;
-  Position GetSnakeHeadPosition() const;
 
- private:
   enum class State {
     MOVING,
     EATING,
     PAUSED,
     SPAWNING,
     GAME_LOST,
+    GAME_WON,
     START,
   };
-  State m_state;
-  const static int s_speedFactor = 1000;
-  GameInfo_t m_gameInfo;
-  Snake m_snake;
-  Position m_fruitLocation;
-  float m_updateTime = 0;
+
+  const static int kSpeedFactor = 1000;
+
+  State current_state_;
+  GameInfo_t game_info_;
+  Snake snake_;
+  Position fruit_location_;
+  float update_time_ = 0.0f;
+  int normal_speed_ = 0;
+  bool fast_mode_ = false;
 };
+
+}  // namespace s21

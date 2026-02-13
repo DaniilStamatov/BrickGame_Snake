@@ -8,6 +8,9 @@
 #include <QPainter>
 #include <QTimer>
 #include <QWidget>
+#include <QString>
+
+#include "../../brick_game/common.h"
 
 #ifdef TETRIS
 #include "../../brick_game/tetris/tetris.h"
@@ -36,16 +39,25 @@ class MainWindow : public QMainWindow {
   ~MainWindow() override;
 
  private:
-  GameWindow *m_gameWin;
-  QGridLayout *m_layout;
-  InfoWindow *m_infoWindow;
+  GameWindow *game_window_;
+  QGridLayout *layout_;
+  InfoWindow *info_window_;
+  QWidget *selector_widget_;
+
+  // Initialize and show the game view (replace selector).
+  // `which` - name of the game requested by the user ("snake" or "tetris").
+  // If empty, default built-in game will be used. If auto_start is true,
+  // simulate Enter to begin the game immediately.
+  void ShowGameView(const QString &which = QString(), bool auto_start = false);
+
+  // Remember which game user selected (for UI/diagnostics).
+  QString selected_game_;
 };
 
 class GameWindow : public QWidget {
   Q_OBJECT
  public:
-  const static int m_cellSize = 20;
-  GameWindow(QWidget *parent = nullptr);
+  GameWindow();
   GameInfo_t GetGameInfo();
 
  protected:
@@ -58,13 +70,13 @@ class GameWindow : public QWidget {
   void updateInfoText(GameInfo_t gameInfo);
 
  private:
-  QColor m_colors[8];
+  QColor colors_[8];
 
-  GameInfo_t m_gameInfo;
-  int m_fieldSizeX;
-  int m_fieldSizeY;
-  QTimer *m_timer;
-  QElapsedTimer m_elapsedTimer;
+  GameInfo_t game_info_;
+  int field_size_x_;
+  int field_size_y_;
+  QTimer *timer_;
+  QElapsedTimer elapsed_timer_;
 };
 
 class InfoWindow : public QWidget {
@@ -77,6 +89,6 @@ class InfoWindow : public QWidget {
   void paintEvent(QPaintEvent *event) override;
 
  private:
-  GameInfo_t m_gameInfo;
-  QColor m_colors[8];
+  GameInfo_t game_info_;
+  QColor colors_[8];
 };

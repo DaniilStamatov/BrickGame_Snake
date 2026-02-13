@@ -1,5 +1,7 @@
 #pragma once
 #include <ncurses.h>
+#include "../../brick_game/common.h"
+
 #ifdef TETRIS
 #include "../../brick_game/tetris/tetris.h"
 #elif defined(SNAKE)
