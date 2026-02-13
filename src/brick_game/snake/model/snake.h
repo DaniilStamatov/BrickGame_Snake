@@ -1,30 +1,71 @@
 #pragma once
-#include "../../common.h"
+
 #include <array>
-#include <vector>
+#include <utility>
+
+#include "../../common.h"
+
+/**
+ * @file snake.h
+ * @brief Snake model types and movement logic.
+ *
+ * This file declares the `Position` structure and the `Snake` class which
+ * stores the snake body, movement direction and provides methods for
+ * moving, growing and collision detection.
+ */
+
+/**
+ * @struct Position
+ * @brief Simple 2D integer coordinate used for the field and snake body.
+ */
+struct Position {
+  int x = 0;
+  int y = 0;
+
+  Position() = default;
+  Position(int x_val, int y_val) : x(x_val), y(y_val) {}
+};
+
+/**
+ * @class Snake
+ * @brief Represents the snake body, movement and collision checks.
+ *
+ * The `Snake` class stores the ordered list of body positions, the current
+ * movement direction and provides operations to move the snake, grow it
+ * when a fruit is eaten and check for self or boundary collisions.
+ */
+namespace s21 {
 class Snake {
-public:
-  struct SnakePart {
-    int x, y;
-    SnakePart() : x(0), y(0) {}
-    SnakePart(int x, int y) : x(x), y(y) {}
-  };
-  enum class Direction { Down = 0, Left = 1, Up = 2, Right = 3 };
+ public:
+  /**
+   * @enum Direction
+   * @brief Cardinal movement directions used by the snake.
+   */
+  enum class Direction { kDown = 0, kLeft = 1, kUp = 2, kRight = 3 };
+
   Snake();
+
   void AddPart() noexcept;
   void Move() noexcept;
-  bool IsColliding() const;
   void SetDirection(Direction new_dir) noexcept;
-  std::array<SnakePart, SCALE> GetSnakeBody() const;
+  void Clear();
+
+  bool IsColliding() const;
+  std::array<Position, SCALE> GetBody() const;
   int GetLength() const;
-  SnakePart GetHead() const;
+  Position GetHead() const;
 
-private:
-  std::array<SnakePart, SCALE> m_parts;
-  Direction m_direction;
-  int m_length;
+ private:
+  static constexpr std::array<std::pair<int, int>, 4> kDirectionOffsets = {
+      std::make_pair(0, 1),   // Down
+      std::make_pair(-1, 0),  // Left
+      std::make_pair(0, -1),  // Up
+      std::make_pair(1, 0)    // Right
+  };
 
-  const std::array<std::pair<int, int>, 4> c_directionOffsets = {
-      std::make_pair(0, 1), std::make_pair(-1, 0), std::make_pair(0, -1),
-      std::make_pair(1, 0)};
+  std::array<Position, SCALE> body_;
+  Direction direction_{Direction::kRight};
+  int length_ = 4;
 };
+
+}  // namespace s21

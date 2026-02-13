@@ -1,11 +1,14 @@
-#ifndef RENDERER_H
-#define RENDERER_H
-
+#pragma once
 #include <ncurses.h>
+#include "../../brick_game/common.h"
+
+#ifdef TETRIS
+#include "../../brick_game/tetris/tetris.h"
+#elif defined(SNAKE)
 #include <ctime>
 
-
-#include "../../brick_game/snake/controller/controller.cpp"
+#include "../../brick_game/snake/controller/controller.h"
+#endif
 #define ADD_BLOCK(y, x, c)            \
   mvaddch(y, x, ' ' | COLOR_PAIR(c)); \
   mvaddch(y, x + 1, ' ' | COLOR_PAIR(c))
@@ -24,4 +27,4 @@ void display_score(GameInfo_t game);
 void init_ncurses();
 void clear_ncurses();
 void print_border();
-#endif
+void GameLoop();
